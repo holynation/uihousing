@@ -6,21 +6,21 @@ use App\Models\Crud;
 
 /** 
 * This class is automatically generated based on the structure of the table.
-* And it represent the model of the boy_quarters table
+* And it represent the model of the tenant table
 */
-class Boy_quarters extends Crud {
+class Tenant extends Crud {
 
 /** 
 * This is the entity name equivalent to the table name
 * @var string
 */
-protected static $tablename = "Boy_quarters"; 
+protected static $tablename = "Tenant"; 
 
 /** 
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = [];
+public static $nullArray = ['status','date_created','date_modified'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -44,7 +44,7 @@ public static $uploadDependency = [];
 * table id alone, the display field name provided must be a column in the table to replace the table id shown to the user.
 * @var array|string
 */
-public static $displayField = 'dob';
+public static $displayField = '';// this display field properties is used as a column in a query if a their is a relationship between this table and another table.In the other table, a field showing the relationship between this name having the name of this table i.e something like this. table_id. We cant have the name like this in the table shown to the user like table_id so the display field is use to replace that table_id.However,the display field name provided must be a column in the table to replace the table_id shown to the user,so that when the other model queries,it will use that field name as a column to be fetched along the query rather than the table_id alone.;
 
 /** 
 * This array contains the fields that are unique
@@ -97,7 +97,7 @@ public static $relation = ['staff' => array('staff_id','id')
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['delete' => 'delete/boy_quarters', 'edit' => 'edit/boy_quarters'];
+public static $tableAction = ['delete' => 'delete/tenant', 'edit' => 'edit/tenant'];
 
 public function __construct(array $array = [])
 {
@@ -105,26 +105,7 @@ public function __construct(array $array = [])
 }
  
 public function getStaff_idFormField($value = ''){
-	$fk = null; 
- 	//change the value of this variable to array('table'=>'staff','display'=>'staff_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'staff_name' as value from 'staff' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('staff', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
-
-		if(is_null($fk)){
-			return $result = "<input type='hidden' name='staff_id' id='staff_id' value='$value' class='form-control' />";
-		}
-
-		if(is_array($fk)){
-			
-			$result ="<div class='form-group'>
-			<label for='staff_id'>Staff</label>";
-			$option = $this->loadOption($fk,$value);
-			//load the value from the given table given the name of the table to load and the display field
-			$result.="<select name='staff_id' id='staff_id' class='form-control'>
-						$option
-					</select>";
-					$result.="</div>";
-		return $result;
-		}
-		
+	return getStaffOption($value);
 }
 public function getOccupant_fullnameFormField($value = ''){
 	return "<div class='form-group'>
@@ -133,10 +114,14 @@ public function getOccupant_fullnameFormField($value = ''){
 			</div>";
 } 
 public function getOccupant_statusFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='occupant_status'>Occupant Status</label>
-				<input type='text' name='occupant_status' id='occupant_status' value='$value' class='form-control' required />
-			</div>";
+	$arr =array('student','academic','non_teaching','others');
+       $option = buildOptionUnassoc($arr,$value);
+       return "<div class='form-group'>
+       		<label for='gender' >Gender</label>
+              <select name='gender' id='gender' class='form-control'>
+              $option
+              </select>
+</div>";
 } 
 public function getPhone_numberFormField($value = ''){
 	return "<div class='form-group'>
@@ -153,7 +138,7 @@ public function getRelationship_mainFormField($value = ''){
 public function getDate_occupiedFormField($value = ''){
 	return "<div class='form-group'>
 				<label for='date_occupied'>Date Occupied</label>
-				<input type='text' name='date_occupied' id='date_occupied' value='$value' class='form-control' required />
+				<input type='date' name='date_occupied' id='date_occupied' value='$value' class='form-control' required />
 			</div>";
 } 
 public function getStatusFormField($value = ''){
@@ -163,24 +148,18 @@ public function getStatusFormField($value = ''){
 			</div>";
 } 
 public function getDate_modifiedFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='date_modified'>Date Modified</label>
-				<input type='text' name='date_modified' id='date_modified' value='$value' class='form-control' required />
-			</div>";
+	return "";
 } 
 public function getDate_createdFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='date_created'>Date Created</label>
-				<input type='text' name='date_created' id='date_created' value='$value' class='form-control' required />
-			</div>";
+	return "";
 } 
 
 protected function getStaff(){
 	$query = 'SELECT * FROM staff WHERE id=?';
-	if (!isset($this->array['ID'])) {
+	if (!isset($this->array['staff_id'])) {
 		return null;
 	}
-	$id = $this->array['ID'];
+	$id = $this->array['staff_id'];
 	$db = $this->db;
 	$result = $db->query($query,[$id]);
 	$result = $result->getResultArray();

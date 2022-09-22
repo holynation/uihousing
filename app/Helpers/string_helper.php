@@ -1,63 +1,5 @@
 <?php
 
-function sendPushNotification(string $token, string $title, string $content)
-{
-    //Send Notification
-    $url = "https://fcm.googleapis.com/fcm/send";
-    $serverKey = getenv('fcm_key');
-    $notification = array('title'=>$title ,'body'=>$content,'sound'=>'default','type'=>'1');
-    $fields = [];
-    $fields = array(
-            'to' => $token,
-            'data' => $notification,
-            'priority'=>'high'
-    );
-    $json = json_encode($fields);
-
-    $headers = array();
-    $headers[] = 'Content-Type: application/json';
-    $headers[] = 'Authorization: key='. $serverKey;
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //Send the request
-    $result = curl_exec($ch);
-    if ($result === FALSE) {
-        echo 'Curl failed: ' . curl_error($ch);
-   	}
-    curl_close($ch);
-}
-
-function getMacAddress(){
-	return getMacAddr1() ?? getMacAddr2() ?? null;
-}
-
-function getMacAddr1(){
-	ob_start();
-	system('getmac');
-	$Content = ob_get_contents();
-	ob_clean();
-	return substr($Content, strpos($Content,'\\')-20, 17);
-}
-
-function getMacAddr2(){
-	ob_start(); // Turn on output buffering
-	system('ipconfig /all'); //Execute external program to display output
-	$mycom = ob_get_contents(); // Capture the output into a variable
-	ob_clean(); // Clean (erase) the output buffer
-	 
-	$findme = "Physical";
-	$pmac = strpos($mycom, $findme); // Find the position of Physical text
-	$mac = substr($mycom,($pmac+36),17); // Get Physical Address
-}
-
 if(!function_exists('toUserAgent'))
 {
 	function toUserAgent(object $agent){
@@ -639,10 +581,10 @@ function attrToString($attributes = array())
 		return $atts;
 	}
 }
-function getCustomerOption($value = '')
+function getStaffOption($value = '')
 {
-	$customer = loadClass('customer');
-	return $customer->getCustomerOption($value);
+	$staff = loadClass('staff');
+	return $staff->getStaffOption($value);
 }
 function getUserOption($value = '')
 {

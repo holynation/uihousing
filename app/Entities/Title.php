@@ -20,7 +20,7 @@ protected static $tablename = "Title";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = [];
+public static $nullArray = ['status','date_created'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -44,7 +44,7 @@ public static $uploadDependency = [];
 * table id alone, the display field name provided must be a column in the table to replace the table id shown to the user.
 * @var array|string
 */
-public static $displayField = 'occupant_num';
+public static $displayField = 'name';
 
 /** 
 * This array contains the fields that are unique
@@ -116,10 +116,7 @@ public function getStatusFormField($value = ''){
 			</div>";
 } 
 public function getDate_createdFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='date_created'>Date Created</label>
-				<input type='text' name='date_created' id='date_created' value='$value' class='form-control' required />
-			</div>";
+	return "";
 } 
 
 protected function getTitle(){

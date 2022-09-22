@@ -735,20 +735,20 @@ function bindDropDown(className){
 			currentChild.html("<option value='"+"'>..choose..</option>");
 			return;
 		}
-		var data='';
+		var data = '';
 		var dp = '';
 		if (depend) {
 			var temp = depend.split(',');
 			for (var i = 0; i < temp.length; i++) {
-				var val1= $("#"+temp[i]).val();
-				temp[i]=val1;
+				let val1 = $("#"+temp[i]).val();
+				temp[i] = val1;
 			}
 			dp = temp.join('/');
 		}
-		var target =currentChild;
+		var target = currentChild;
 		var loadFunction = '';
 		loadFunction = (childChange == 'true') ? childInputChangeAttr : childLoad;
-		url = $('#baseurl').val()+'ajaxData/'+path+'/'+val+'/'+dp;
+		url = $('#baseurl').val()+'/'+'ajaxData/'+path+'/'+val+'/'+dp;
 		sendAjax(target,url,data,'get',loadFunction);
 	});
 }

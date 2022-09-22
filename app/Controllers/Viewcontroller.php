@@ -20,7 +20,7 @@ class Viewcontroller extends BaseController{
   private $tableWithHeaderModel;
   protected $db;
   private $adminData;
-  private $customerData;
+  private $staffData;
   private $companyData;
 
   private $crudNameSpace = 'App\Models\Crud';
@@ -92,8 +92,7 @@ private function admin($page,&$data)
   if (!$role_id) {
     throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
   }
-
-  $role=false;
+  $role = false;
   if ($this->webSessionManager->getCurrentUserProp('user_type')=='admin') {
     $admin = loadClass('admin');
     $admin->ID = $this->webSessionManager->getCurrentUserProp('user_table_id');
@@ -110,19 +109,20 @@ private function admin($page,&$data)
   }
   $path ='vc/admin/'.$page;
 
-  # this approach is use so as to allow this page pass through using a path that is already permitted
+  // this approach is use so as to allow this page pass through using a path that is already permitted
   if ($page=='permission') {
     $path ='vc/create/role';
   }
 
-  if($page == 'view_model' || $page == 'extend_equip_request' 
-    || $page == 'equip_delivery_status' || $page == 'view_more'){
-    $path = 'vc/admin/view_model/equip_request?type=approved';
+  if($page == 'view_model' || $page == 'view_more'
+    || $page == 'children' || $page == 'occupant'
+  ){
+    $path = 'vc/admin/view_model/staff';
   }
   if (!$role->canView($path)) {
     echo show_access_denied();exit;
   }
-  # caching this role pages
+  // caching this role pages
   if(!$canView = cache('canView')){
     $canView = $this->adminData->getCanViewPages($role);
     cache()->save('canView',$canView,900); # cache for 15mins
@@ -158,9 +158,9 @@ private function adminProfile(&$data)
 {
   $admin = loadClass('admin');
   $admin = new $admin();
-  $admin->ID=$this->webSessionManager->getCurrentUserProp('user_table_id');
+  $admin->ID = $this->webSessionManager->getCurrentUserProp('user_table_id');
   $admin->load();
-  $data['admin']=$admin;
+  $data['admin'] = $admin;
 }
 
 /**
@@ -177,12 +177,6 @@ private function adminView_model(&$data){
   $modelType = $_GET['type'] ?? "";
   
   $pageTitle = $this->getTitlePage($model) ?? removeUnderscore($model);
-  if($model == 'owners' && $id){
-    $pageTitle = 'Owners Equipments';
-  }
-  else if($model == 'hirers' && $id){
-    $pageTitle = 'Hirers Bookings';
-  }
 
   $result = $newModel->viewList($id,$modelType);
   $data['modelName'] = $model;
@@ -199,7 +193,7 @@ private function adminView_more(&$data){
     $data['modelPayload'] = [];
     $data['pageTitle'] = null;
   }
-  $modelType = $data['extra'][3]; # this is the index of the type
+  $modelType = $data['extra'][3]; // this is the index of the type
   $modelName = $data['entityName'];
   $newModel = loadClass($modelName);
 
@@ -209,117 +203,54 @@ private function adminView_more(&$data){
   $data['modelPayload'] = $result;
   $data['modelName'] = $modelName;
   $data['modelInfo'] = false;
-
-  if($modelName == 'equip_request'){
-    $equip_request = loadClass('equip_request');
-    $equip_request->ID = $id;
-    if($equip_request->load()){
-      $data['modelInfo'] = true;
-      $data['equipHirers'] = $equip_request->hirers;
-      $data['equipOwners'] = $equip_request->equipments->owners->hirers;
-      $data['equipImages'] = $equip_request->equipments->equip_images;
-    }
-  }
-  else if($modelName == 'equipments'){
-    $entity = ($modelType == 'all') ? loadClass('equipments') : loadClass('equip_request');
-    $entity->ID = $id;
-    if($entity->load()){
-      $data['modelInfo'] = true;
-      $data['equipImages'] = ($modelType == 'all') ? $entity->equip_images : $entity->equipments->equip_images;
-    }
-  }
 }
 
 private function getTitlePage(string $modelName){
   $result = [
-    'equip_request'=>'equipment bookings',
-    'equipments' => $this->request->getGet('type').' '.'equipments',
+    'staff' => 'staff'
   ];
   return array_key_exists($modelName, $result) ? $result[$modelName] : null;
 }
 
-private function adminExtend_equip_request(&$data){
-  $id = $data['id'];
-  if(!$id){
-    $this->show_404();exit;
+private function staff($page,&$data){
+  $staff = loadClass('staff');
+  if($this->webSessionManager->getCurrentUserProp('user_type') == 'staff'){
+    $staff->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
+
+    $staff->load();
+    $this->staffData->setCustomer($staff);
+    $data['staff'] = $staff;
   }
-  $extend = loadClass('extend_equip_request');
-  $result = $extend->getEquipExtendedDetails($id);
-  $hirers = $result->hirers ?? null;
-  $data['modelStatus'] = $result ? true : false;
-  $data['modelPayload'] = $result ? $result->toArray() : null;
-  $data['hirers'] = $hirers ? $hirers->toArray() : null;
-}
-
-private function adminEquip_delivery_status(&$data){
-  $id = $data['id'];
-  if(!$id){
-    $this->show_404();exit;
+  else{
+    $this->admin('children',$data);
   }
-  $delivery = loadClass('equip_delivery_status');
-  $equipOrder = loadClass('equip_order');
-  $result = $delivery->getDeliveryStatus($id,true);
-  $equipOrder->ID = $id;
-  if(!$equipOrder->load()){
-    exit('order info not available');
-  }
-  $equip = $equipOrder->equip_request->equipments;
-  $equipName = $equip->equip_name;
-  $equipOwner = $equip->owners->hirers->fullname;
-  $data['time'] = new Time;
-  $data['modelStatus'] = (!empty($result)) ? true : false;
-  $data['modelPayload']['deliveryInfo'] = (!empty($result)) ? $result : null;
-  $data['modelPayload']['equipName'] = $equipName;
-  $data['modelPayload']['ownerName'] = $equipOwner;
-  $data['modelPayload']['equipOrder'] = $equipOrder;
 }
 
-private function adminEquipments(&$data){
-  $equipImages = loadClass('equipments');
-  $result = $equipImages->getAllEquips();
-  $data['modelStatus'] = $result ? true : false;
-  $data['modelPayload'] = $result ? $result : null;
-  $data['scopeObject'] = $this->db;
+private function staffDashboard(&$data){
+  $data = array_merge($data,$this->staffData->loadDashboardInfo());
 }
 
-private function adminKyc_document(&$data){
-  $equipImages = loadClass('kyc_document');
-  $result = $equipImages->getAllKycs();
-  $data['modelStatus'] = $result ? true : false;
-  $data['modelPayload'] = $result ? $result : null;
-  $data['scopeObject'] = $this->db;
-  $data['timeObject'] = new Time;
-}
-
-private function adminChats(&$data){
-  
-}
-
-private function hirers($page,&$data){
-  $customer = loadClass('hirers');
-  $this->customer->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
-  $customer->load();
-  $this->customerData->setCustomer($customer);
-  $data['customer']=$customer;
-}
-
-private function hirersDashboard(&$data){
-  $data = array_merge($data,$this->customerData->loadDashboardInfo());
-}
-
-public function hirersProfile(&$data)
+public function staffProfile(&$data)
 {
   if ($this->webSessionManager->getCurrentUserProp('user_type')=='admin') {
     $this->admin('profile',$data);
     if (!isset($data['id']) || !$data['id']) {
       $this->show_404();exit;
     }
-    $std = new Customer(array('ID'=>$data['id']));
+    $std = new Staff(array('ID'=>$data['id']));
     if (!$std->load()) {
       throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
     }
-    $data['customer']=$std;
+    $data['staff'] = $std;
   }
+}
+
+public function staffChildren(&$data){
+  $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
+}
+
+public function staffTenant(&$data){
+  $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
 }
 
 //function for loading edit page for general application

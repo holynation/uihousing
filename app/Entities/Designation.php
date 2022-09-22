@@ -20,7 +20,7 @@ protected static $tablename = "Designation";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = [];
+public static $nullArray = ['status'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -96,7 +96,7 @@ public static $relation = [];
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['delete' => 'delete/designation', 'edit' => 'edit/designation'];
+public static $tableAction = ['enable'=>'getEnabled','delete' => 'delete/designation', 'edit' => 'edit/designation'];
 
 public function __construct(array $array = [])
 {

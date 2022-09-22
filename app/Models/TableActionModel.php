@@ -27,14 +27,10 @@ class TableActionModel extends Model
 		$classname = empty($classname)?lcfirst(get_class($object)):ucfirst($classname);
 		$link = base_url("ac/disable/$classname");
 		$label = "disable";
-		
-		if(strtolower($classname) == 'hiowner'){
-			$classname = 'owners';
-		}
 
 		if(strtolower($classname) == 'admin'){
 			$label = 'Ban';
-		}else if(strtolower($classname) == ('owners' || 'hirers')){
+		}else if(strtolower($classname) == ('staff')){
 			$label = "Ban";
 		}
 
@@ -42,7 +38,7 @@ class TableActionModel extends Model
 		if (!$status) { # check if status is false
 			$link = base_url("ac/enable/$classname");
 			$label = "enable";
-			if (strtolower($classname) == ('owners' || 'hirers')) {
+			if (strtolower($classname) == ('staff')) {
 				$label = 'UnBan';
 			}else if(strtolower($classname) == 'admin'){
 				$label = 'UnBan';

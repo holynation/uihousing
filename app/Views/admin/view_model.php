@@ -35,42 +35,13 @@
                 'edit' => "edit/{$tempModel}",
                 'view more' => "vc/admin/view_more/{$tempModel}/{$type}"
               ];
-              
-              if($tempModel == 'equip_request' and ($type == 'approved' || $type == 'failed')){
+
+              if($tempModel == 'staff' && empty($type)){
                 $action = [
-                  'View More' => "vc/admin/view_more/{$tempModel}/{$type}",
-                  'View extended Booking' => "vc/admin/extend_equip_request",
-                  'Delivery Status' => "vc/admin/equip_delivery_status"
-                ];
-              }
-              else if($tempModel == 'equipments' || $tempModel == 'equip_payment'){
-                $action = [
-                  'View More' => "vc/admin/view_more/{$tempModel}/{$type}",
-                ];
-              }
-              else if($tempModel == 'owners' and empty($dataParam)){
-                $action = [
-                  'delete' => "delete/{$tempModel}",
-                  'view more' => "vc/admin/view_more/{$tempModel}/owners",
-                  'View Equipment' => "vc/admin/view_model/{$tempModel}",
+                  'view profile' => "vc/admin/view_more/{$tempModel}/view",
+                  'view children' => "vc/staff/children",
+                  'view tenant' => "vc/staff/tenant",
                   'edit' => "edit/{$tempModel}",
-                  'enable' => 'getEnabled',
-                ];
-              }
-              else if(($tempModel == 'owners' || $tempModel == 'hirers') and !empty($dataParam)){
-                $action = [];
-              }
-              else if($tempModel == 'hirers' && empty($type)){
-                $action = [
-                  'view more' => "vc/admin/view_more/{$tempModel}/hirers",
-                  'View Bookings' => "vc/admin/view_model/{$tempModel}",
-                  'edit' => "edit/{$tempModel}",
-                  'enable' => 'getEnabled',
-                ];
-              }
-              else if($tempModel == 'hirers' && !empty($type)){
-                $action = [
-                  'view more' => "vc/admin/view_more/{$tempModel}/hirers",
                   'enable' => 'getEnabled',
                 ];
               }
@@ -118,7 +89,7 @@
 
 <?php include_once ROOTPATH."template/footer.php"; ?>
 <script>
-    var inserted=false;
+    var inserted = false;
 
     let formGrp = $('div[class=form-group]');
     let formLabel = $('label[for]');
@@ -148,7 +119,7 @@
 
     function showUpdateForm(target,data) {
       var data = JSON.parse(data);
-      if (data.status==false) {
+      if (data.status == false) {
         showNotification(false,data.message);
         return;
       }
@@ -167,7 +138,7 @@
 
     function ajaxFormSuccess(target,data) {
       if (data.status) {
-        inserted=true;
+        inserted = true;
         $('form').trigger('reset');
       }
       showNotification(data.status,data.message);
@@ -176,11 +147,6 @@
       btnSubmit.prop('disabled', false);
       btnSubmit.html('Submit');
       if (typeof target ==='undefined') {
-        location.reload();
-      }
-      if(data.status){
-        inserted = false;
-        $('#modal-edit').modal('close');
         location.reload();
       }
     }

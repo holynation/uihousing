@@ -74,7 +74,7 @@
    }
 
    function loadRevenueChart() {
-    var val = JSON.parse('<?php echo json_encode($revenueDistrix) ?>');
+    var val = JSON.parse('<?php echo json_encode(@$revenueDistrix) ?>');
     if (val !== undefined){
       Morris.Bar({
         element: 'totalRevenueChart',
@@ -100,7 +100,7 @@
    }
 
    function loadOrderChart() {
-    var val = JSON.parse('<?php echo json_encode($orderStatusDistrix) ?>');
+    var val = JSON.parse('<?php echo json_encode(@$orderStatusDistrix) ?>');
     if (val !== undefined){
       Morris.Donut({
         element: 'orders-pie',
@@ -121,7 +121,7 @@
    }
 
    function loadWithdrawalChart() {
-    var val = JSON.parse('<?php echo json_encode($withdrawalStatusDistrix) ?>');
+    var val = JSON.parse('<?php echo json_encode(@$withdrawalStatusDistrix) ?>');
     if (val !== undefined){
       Morris.Donut({
         element: 'withdrawal-pie',

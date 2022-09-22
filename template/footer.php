@@ -1,27 +1,27 @@
-                    <!-- Footer -->
-                    <footer class="content-footer footer bg-footer-theme">
-                      <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                        <div class="mb-2 mb-md-0">
-                          ©
-                          <script>
-                            document.write(new Date().getFullYear());
-                          </script>
-                          Equipro. All Rights Reserved | Powered by
-                          <a href="https://codefixbug.com" target="_blank" class="footer-link fw-bolder">Codefixbug Limited.</a>
-                        </div>
-                      </div>
-                    </footer>
-                    <!-- / Footer -->
-                    <div class="content-backdrop fade"></div>
-                </div>
-                <!-- Content wrapper -->
+             
+                <!-- Footer -->
+                <footer class="content-footer footer bg-footer-theme">
+                  <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                    <div class="mb-2 mb-md-0">
+                      ©
+                      <script>
+                        document.write(new Date().getFullYear());
+                      </script>
+                      UIHousing. All Rights Reserved
+                    </div>
+                  </div>
+                </footer>
+                <!-- / Footer -->
+                <div class="content-backdrop fade"></div>
             </div>
-            <!-- / Layout page -->
+            <!-- Content wrapper -->
         </div>
-        <!-- Overlay -->
-        <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- / Layout page -->
     </div>
-    <!-- / Layout wrapper -->
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+</div>
+<!-- / Layout wrapper -->
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -32,7 +32,8 @@
     <script src="<?php echo base_url("assets/vendor/js/menu.js"); ?> "></script>
     <!-- endbuild -->
 
-    <?php if($userType == 'admin'): ?>
+    <?php 
+    if($userType == 'admin'): ?>
     <script src="<?php echo base_url('assets/vendor/libs/datatables/jquery.dataTables.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/vendor/libs/datatables/dataTables.bootstrap4.min.js'); ?>"></script>
     <script type="text/javascript">

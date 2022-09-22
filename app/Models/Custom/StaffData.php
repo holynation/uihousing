@@ -1,6 +1,6 @@
 <?php 
 /**
-* This is the class that manages all information and data retrieval needed by the student section of this application.
+* This is the class that manages all information and data retrieval needed by the staff section of this application.
 */
 namespace App\Models\Custom;
 
@@ -9,9 +9,9 @@ use App\Models\WebSessionManager;
 use App\Models\Mailer;
 use CodeIgniter\HTTP\RequestInterface;
 
-class CustomerData extends Model
+class StaffData extends Model
 {
-	private $customer;
+	private $staff;
 	private $mailer;
 	private $webSessionManager;
 	protected $db;
@@ -26,9 +26,9 @@ class CustomerData extends Model
 		$this->mailer = new Mailer;
 	}
 
-	public function setCustomer($customer)
+	public function setStaff($staff)
 	{
-		$this->customer=$customer;
+		$this->staff = $staff;
 	}
 
 

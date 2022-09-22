@@ -33,7 +33,7 @@
                     <div class="col-md-12 col-xl-12 col-12">
                       <!-- Basic Bootstrap Table -->
                       <div class="card">
-                        <h5 class="card-header">More Info on <?php echo ucwords($pageTitle); ?></h5>
+                        <h5 class="card-header">Detail Info on <?php echo ucwords($pageTitle); ?></h5>
                         <div class="table-responsive text-nowrap">
                           <table class="table">
                             <tbody class="table-border-bottom-0">

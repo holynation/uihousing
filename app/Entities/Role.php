@@ -237,10 +237,10 @@ class Role extends Crud
 
 	public function getModules(){
 		$result=array(
-			'Manage Occupants' => array(
-				'class' => 'building-house',
+			'Manage ' => array(
+				'class' => 'bx-building-house',
 				'children' => array(
-					'Occupant Department' => 'vc/create/occupant_department',
+					'Staff Department' => 'vc/create/staff_department',
 					'Applicant Allocation' => 'vc/create/applicant_allocation',
 					'Allocation' => 'vc/create/allocation',
 				)
@@ -248,9 +248,9 @@ class Role extends Crud
 			'Users Management'=>array(
 				'class'=>'bx-user-plus',
 				'children'=>array(
-					'Manage Occupant'=>'vc/create/occupant',
+					'Manage Staff'=>'vc/admin/view_model/staff',
 					'Manage Children'=>'vc/create/children',
-					'Manage Tenant'=>'vc/create/boy_quarters',
+					'Manage Tenant'=>'vc/create/tenant',
 				)
 			),
 			'Admin Management'=>array(

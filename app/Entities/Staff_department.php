@@ -20,7 +20,7 @@ protected static $tablename = "Staff_department";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = [];
+public static $nullArray = ['status'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -98,7 +98,7 @@ public static $relation = ['staff' => array('staff_id','id')
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['delete' => 'delete/staff_department', 'edit' => 'edit/staff_department'];
+public static $tableAction = ['enable'=>'getEnabled','delete' => 'delete/staff_department', 'edit' => 'edit/staff_department'];
 
 public function __construct(array $array = [])
 {
@@ -106,30 +106,10 @@ public function __construct(array $array = [])
 }
  
 public function getStaff_idFormField($value = ''){
-	$fk = null; 
- 	//change the value of this variable to array('table'=>'staff','display'=>'staff_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'staff_name' as value from 'staff' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('staff', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
-
-		if(is_null($fk)){
-			return $result = "<input type='hidden' name='staff_id' id='staff_id' value='$value' class='form-control' />";
-		}
-
-		if(is_array($fk)){
-			
-			$result ="<div class='form-group'>
-			<label for='staff_id'>Staff</label>";
-			$option = $this->loadOption($fk,$value);
-			//load the value from the given table given the name of the table to load and the display field
-			$result.="<select name='staff_id' id='staff_id' class='form-control'>
-						$option
-					</select>";
-					$result.="</div>";
-		return $result;
-		}
-		
+	return getStaffOption($value)		;
 }
 public function getDepartments_idFormField($value = ''){
-	$fk = null; 
- 	//change the value of this variable to array('table'=>'departments','display'=>'departments_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'departments_name' as value from 'departments' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('departments', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
+	$fk = array('table'=>'departments','display'=>'name');
 
 		if(is_null($fk)){
 			return $result = "<input type='hidden' name='departments_id' id='departments_id' value='$value' class='form-control' />";
@@ -158,10 +138,10 @@ public function getStatusFormField($value = ''){
 
 protected function getStaff(){
 	$query = 'SELECT * FROM staff WHERE id=?';
-	if (!isset($this->array['ID'])) {
+	if (!isset($this->array['staff_id'])) {
 		return null;
 	}
-	$id = $this->array['ID'];
+	$id = $this->array['staff_id'];
 	$db = $this->db;
 	$result = $db->query($query,[$id]);
 	$result = $result->getResultArray();
@@ -174,10 +154,10 @@ protected function getStaff(){
 
 protected function getDepartments(){
 	$query = 'SELECT * FROM departments WHERE id=?';
-	if (!isset($this->array['ID'])) {
+	if (!isset($this->array['departments_id'])) {
 		return null;
 	}
-	$id = $this->array['ID'];
+	$id = $this->array['departments_id'];
 	$db = $this->db;
 	$result = $db->query($query,[$id]);
 	$result = $result->getResultArray();

@@ -195,7 +195,7 @@
 		}
 		private function openTableTag($tableAttr=array()){
 			$attr = (!empty($tableAttr)) ? attrToString($tableAttr) : "";
-			return "<div class=\"box\"><div class=\"table-responsive no-padding\"><table $attr class='table table-bordered'>\n";
+			return "<div class=\"box\"><div class=\"table-responsive text-nowrap\"><table $attr class='table table-striped'>\n";
 		}
 		private function extractheader($keys,$includeAction=true,$appendForm=array()){
 			$result='<thead>';

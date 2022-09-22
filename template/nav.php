@@ -1,9 +1,9 @@
-<?php $userType = (!isset($userType)) ? $webSessionManager->getCurrentUserProp('user_type') : $userType ;  
+<?php $userType = (!isset($userType)) ? $webSessionManager->getCurrentUserProp('user_type') : $userType ;
 $dashLink = '';
 $dashName = "Dashboard";
 $dashIcon = "bx-home-circle";
-if($userType == 'hirers'){
-    $dashLink = 'vc/hirers/dashboard';
+if($userType == 'staff'){
+    $dashLink = 'vc/staff/dashboard';
     $dashName = 'Dashboard';
 } else if($userType == 'admin'){
     $dashLink = 'vc/admin/dashboard';
@@ -14,7 +14,7 @@ if($userType == 'hirers'){
     <div class="app-brand demo">
         <a href="<?php echo $dashLink; ?>" class="app-brand-link">
             <span class="app-brand-logo demo">
-              <a href="<?php echo base_url('/'); ?>" class="logo-link">
+              <a href="<?php echo base_url($dashLink); ?>" class="logo-link">
                   <img class="logo-img logo-img-lg" src="<?php echo base_url('assets/img/logo/logo_short.png'); ?>" alt="logo">
               </a>
             </span>

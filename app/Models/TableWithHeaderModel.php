@@ -243,7 +243,7 @@ class TableWithHeaderModel extends Model
 
 	private function openTable(array $attr = array()){
 		$attr = (!empty($attr)) ? attrToString($attr) : "";
-		return "  <div><div class=\"table-responsive text-nowrap\"><table $attr> \n";
+		return " <div><div class=\"table-responsive text-nowrap\"><table $attr > \n";
 	}
 
 	public function appendEmptyIcon(string $icon=null){

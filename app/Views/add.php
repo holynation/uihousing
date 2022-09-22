@@ -16,9 +16,9 @@ $search = ($configData && array_key_exists('search', $configData))?$configData['
 $searchPlaceholder = ($configData && array_key_exists('search_placeholder', $configData))?$configData['search_placeholder']:"";
 $searchOrderBy = ($configData && array_key_exists('order_by', $configData))?$configData['order_by']:"";
 $filter = ($configData && array_key_exists('filter', $configData))?$configData['filter']:"";
-$show_add = ($configData && array_key_exists('show_add', $configData))?$configData['show_add']:false;
+$show_add = ($configData && array_key_exists('show_add', $configData))?$configData['show_add']:true;
 $checkBox = ($configData && array_key_exists('table_checkbox', $configData))?$configData['table_checkbox']:false;
-$tableAttr = ($configData && array_key_exists('table_attr', $configData))?$configData['table_attr']:array('class'=>'table', 'id'=> 'datatable-buttons'); # 'id'=>'datatable-buttons-customer'
+$tableAttr = ($configData && array_key_exists('table_attr', $configData))?$configData['table_attr']:array('class'=>'table table-striped', 'id'=> 'datatable-buttons'); # 'id'=>'datatable-buttons-customer'
 $editMessageInfo = ($configData && array_key_exists('edit_message_info', $configData))?$configData['edit_message_info']:"";
 $headerTitle = ($configData && array_key_exists('header_title', $configData))?$configData['header_title']:"";
 
@@ -71,7 +71,7 @@ if($query) {
   }
   $tableData = $queryHtmlTableObjModel->openTableHeader($query,array(),null,$tableAttr,$tableExclude)
     ->excludeSerialNumber(true)
-    ->paging(true,0,100)
+    // ->paging(true,0,100)
     ->appendTableAction($tableAction,null)
     ->appendCheckBox($checkBox,array('class'=>'form-control'))
     ->generateTable();
@@ -82,7 +82,7 @@ else{
   ->appendTableAction($tableAction)
   ->appendEmptyIcon(null)
   ->generateTableBody()
-  ->pagedTable(true,100)
+  // ->pagedTable(false,100)
   ->generate();
 }
 ?>
@@ -103,9 +103,6 @@ $formContent= $modelFormBuilder->start($model.'_table')
 <?php include_once ROOTPATH."template/header.php"; ?>
     <!-- Page header -->
     <div class="container-p-y container-p-x">
-      <div class="d-flex">
-        <h4><span><?php echo ucfirst($userType); ?> </span> - <?php echo ucfirst(removeUnderscore($model)); ?> Page</h4>
-      </div>
 
       <div class="d-flex">
         <div class="breadcrumb">
@@ -120,7 +117,7 @@ $formContent= $modelFormBuilder->start($model.'_table')
     <!-- Content -->
     <div class="container-xxl flex-grow-1">
       <?php if($show_add): ?>
-        <div class="float-right mb-3">
+        <div class="float-right mb-2">
             <a href="#" class="btn btn-primary" data-bs-toggle='modal' data-bs-target='#myModal'><em class="menu-icon tf-icons bx bx-plus-medical"></em><span>Add</span>
             </a>
 
@@ -280,7 +277,7 @@ $formContent= $modelFormBuilder->start($model.'_table')
 <?php include_once ROOTPATH."template/footer.php"; ?>
 
 <script>
-    var inserted=false;
+    var inserted = false;
 
     let formGrp = $('div[class=form-group]');
     let formLabel = $('label[for]');
@@ -338,11 +335,6 @@ $formContent= $modelFormBuilder->start($model.'_table')
       btnSubmit.prop('disabled', false);
       btnSubmit.html('Submit');
       if (typeof target ==='undefined') {
-        location.reload();
-      }
-      if(data.status){
-        inserted = false;
-        $('#modal-edit').modal('close');
         location.reload();
       }
     }
