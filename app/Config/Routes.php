@@ -31,21 +31,7 @@ $routes->setAutoRoute(false);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Equipro::index');
-
-// The route for the application mobile API is here
-$routes->group('api', ['filter' => 'apiAuth'], function ($routes) {
-    $routes->add('(:any)', 'Api::mobileApi/$1');
-    $routes->add('(:any)/(:any)', 'Api::mobileApi/$1/$2');
-    $routes->add('(:any)/(:any)', 'Api::mobileApi/$1/$2/$3');
-});
-
-// The route for the application web API is here
-$routes->group('webApi', ['filter' => 'apiAuth'], function ($routes) {
-    $routes->add('(:any)', 'Api::webApi/$1');
-    $routes->add('(:any)/(:any)', 'Api::webApi/$1/$2');
-    $routes->add('(:any)/(:any)', 'Api::webApi/$1/$2/$3');
-});
+$routes->get('/', 'Housing::index');
 
 // The route for normal operations for the backend
 $routes->group('vc/create', function ($routes) {
@@ -89,22 +75,16 @@ $routes->add('truncate/(:any)', 'Actioncontroller::truncate/$1');
 $routes->add('mail/(:any)/(:any)', 'Actioncontroller::mail/$1/$2');
 $routes->add('changestatus/(:any)/(:any)/(:any)', 'Actioncontroller::changeStatus/$1/$2/$3');
 
-$routes->add('account/verify/(:any)/(:any)/(:any)', 'Auth::verify/$1/$2/$3');
-$routes->add('account/verifyTransaction/(:any)', 'Auth::verifyTransaction/$1');
 $routes->add('register', 'Auth::signup');
 $routes->add('login', 'Auth::login');
 $routes->add('logout', 'Auth::logout');
 $routes->add('forget_password', 'Auth::forget');
 $routes->add('auth/web', 'Auth::web');
+$routes->add('auth/register', 'Auth::register');
 
 $routes->add('admin/dashboard', 'Viewcontroller::view/admin/dashboard');
+$routes->add('staff/dashboard', 'Viewcontroller::view/staff/dashboard');
 $routes->add('uploaded/(:any)/(:any)', 'Api::accessFiles/$1/$2');
-
-// this route is used for webhook
-$routes->add('paystack_pay_verify', 'Authhook::verifyTransaction/paystack');
-$routes->add('init_payment', 'Authhook::init_payment');
-$routes->add('stripe_pay_verify', 'Authhook::verifyTransaction/stripe');
-
 
 
 /*

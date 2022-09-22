@@ -14,12 +14,12 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Login Equipro</title>
+    <title>Login UIHousing</title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?php echo base_url("assets/img/logo/favicon.png"); ?>" />
+    <link rel="icon" type="image/x-icon" href="<?php echo base_url("assets/img/logo/favicon.ico"); ?>" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,9 +45,6 @@
     <link rel="stylesheet" href="<?php echo base_url("assets/vendor/css/pages/page-auth.css"); ?>" />
     <!-- Helpers -->
     <script src="<?php echo base_url("assets/vendor/js/helpers.js"); ?> "></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="<?php echo base_url("assets/js/config.js"); ?> "></script>
   </head>
 
@@ -71,8 +68,8 @@
                 </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-2">Welcome to Equipro! 👋</h4>
-              <p class="mb-4">Please sign-in to your account and start the adventure</p>
+              <h4 class="mb-2">Welcome to UIHOUSING App! 👋</h4>
+              <p class="mb-4">Please sign-in to your account and enjoy your biddings</p>
 
                 <?php echo form_open("auth/web", array('class' => 'mb-3', 'id' => 'loginForm')); ?>
                 <?= csrf_field(); ?>
@@ -92,6 +89,12 @@
                   />
                 </div>
                 <div class="mb-3 form-password-toggle">
+                  <div class="d-flex justify-content-between">
+                    <label class="form-label" for="password">Password</label>
+                    <a href="<?php echo base_url('forget_password'); ?>">
+                      <small>Forgot Password?</small>
+                    </a>
+                  </div>
                   <div class="input-group input-group-merge">
                     <input
                       type="password"
@@ -112,6 +115,12 @@
                   <button class="btn btn-primary d-grid w-100" type="submit" id="btnLogin">Sign in</button>
                 </div>
               </form>
+              <p class="text-center">
+                <span>New on our platform?</span>
+                <a href="<?php echo base_url('register'); ?>">
+                  <span>Create an account</span>
+                </a>
+              </p>
             </div>
           </div>
           <!-- /Register -->

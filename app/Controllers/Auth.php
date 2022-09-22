@@ -20,7 +20,7 @@ class Auth extends BaseController
 	public function __construct()
 	{
 
-		helper(['string', 'url']);
+		helper(['string', 'url','form']);
 		$this->webSessionManager = new WebSessionManager;
 		$this->mailer = new Mailer;
 		$this->db = db_connect();
@@ -31,9 +31,89 @@ class Auth extends BaseController
 		$this->login();
 	}
 
+	public function signup($data = ''){
+		$data = [];
+		$data['db'] = $this->db;
+		return view('housing/register', $data);
+	}
+
 	public function login($data = '')
 	{
-		return view('equipro/login', [$data]);
+		return view('housing/login', [$data]);
+	}
+
+	public function forget($data = ''){
+		return view('housing/forget_password', [$data]);
+	}
+
+	public function register(){
+		if($this->inputValidate()){
+			$data = $this->request->getPost(null);
+			// print_r($data);exit;
+
+			$staffnumber = trim($data['staff_number'] ?? "");
+			$firstname = trim($data['firstname'] ?? "");
+			$lastname = trim($data['lastname'] ?? "");
+			$designation = trim($data['designation'] ?? "");
+			$appointment_status = trim($data['appointment_status'] ?? "");
+			$email = trim(@$data['email'] ?? "");
+			$fpassword = trim($data['password']);
+			$cpassword = trim($data['confirm_password']);
+
+			if (!isNotEmpty($firstname,$lastname,$staffnumber,$designation,$appointment_status,$email,$fpassword,$cpassword)) {
+				$arr['status'] = false;
+				$arr['message'] = 'All field are required';
+				echo json_encode($arr);
+				return;
+			}
+
+			if(filter_var($email, FILTER_VALIDATE_EMAIL) == FALSE){
+				$arr['status'] = false;
+				$arr['message'] = 'Email is not valid';
+				echo json_encode($arr);
+				return;
+			}
+
+			if($fpassword !== $cpassword){
+				$arr['status'] = false;
+				$arr['message'] = 'New password must match Confirm password...';
+				echo json_encode($arr);
+				return;
+			}
+			$user = loadClass('user');
+			$result = $user->createUser($data);
+
+			switch ($result) {
+				case 1:
+					$arr['status'] = true;
+					$arr['message']= 'Your have successfully register.You can now sign-in';
+					echo json_encode($arr);
+					return;
+				break;
+
+				case 2:
+				$arr['status'] = false;
+					$arr['message']= "error occurred while registering";
+					echo json_encode($arr);
+					return;
+				break;
+
+				case 3:
+					$arr['status'] = false;			
+					$arr['message']= "email already registered on the platform.";
+					echo json_encode($arr);
+					return;
+				break;
+
+				case 4:
+					$arr['status'] = false;			
+					$arr['message']= "error occurred while registering,please try again";
+					echo json_encode($arr);
+					return;
+				break;
+			}
+		}
+		$this->signup();
 	}
 
 	public function web()
@@ -117,25 +197,93 @@ class Auth extends BaseController
 		$this->login();
 	}
 
-	/**
-	 * This is to return the user based dashboard
-	 * 
-	 * @param  string $user
-	 * @return string
-	 */
-	private function getUserPage($user)
-	{
-		$link = array('admin' => 'vc/admin/dashboard','hirers'=>'vc/hirers/dashboard');
-		$roleName = $user->user_type;
-		return $link[$roleName];
-	}
+	public function forgetPassword(){
+		if(isset($_POST) && count($_POST) > 0 && !empty($_POST)){
+			if($_POST['task'] == 'reset'){
+				$email = trim($this->input->post('email',true));
+				if (!isNotEmpty($email)) {
+			        echo createJsonMessage('status',false,"message","empty field detected.please fill all required field and try again");
+			        return;
+			    }
+				if(filter_var($email, FILTER_VALIDATE_EMAIL) == FALSE){
+					$arr['status'] = false;
+					$arr['message'] = 'email is not valid';
+					echo json_encode($arr);
+					return;
+				}
+				$find = $this->user->find($email);
+				if(!$find){
+					$arr['status'] = false;
+					$arr['message'] = 'the email address appears not to be on our platform...';
+					echo json_encode($arr);
+					return;
+				}
 
-	/**
-	 * [inputValidate description]
-	 * @return bool
-	 */
-	private function inputValidate(){
-    	return isset($_POST) && count($_POST) > 0 && !empty($_POST) ?? false;
+				$sendMail = ($this->mailer->sendCustomerMail($email,'password_reset',3,$email)) ? true : false;
+				$message = "A link to reset your password has been sent to $email.If you don't see it, be sure to check your spam folders too!";
+				$arr['status'] = ($sendMail) ? true : false;
+				$arr['message'] = ($sendMail) ? $message : 'error occured while performing the operation,please check your network and try again later.';
+				echo json_encode($arr);
+				return;
+			}
+			// this is for when resetting password
+			else if ($_POST['task'] == 'update'){
+				if(isset($_POST['email'], $_POST['email_hash']))
+                {
+                	if($_POST['email_hash'] !== sha1($_POST['email'] . $_POST['email_code'])){
+                		// either a hacker or they changed their mail in the mail field, just die
+	                    $arr['status'] = false;
+						$arr['message'] = 'Oops,error updating your password';
+						echo json_encode($arr);
+						return;
+                	}
+                	$new = $this->input->post('password',true);
+                	$confirm = $this->input->post('confirm_password',true);
+                	$email = $this->input->post('email',true);
+				    $dataID = $email;
+
+				    if (!isNotEmpty($new,$confirm)) {
+				        echo createJsonMessage('status',false,"message","empty field detected.please fill all required field and try again");
+				        return;
+				    }
+
+				    if ($new !== $confirm) {
+				       echo createJsonMessage('status',false,'message','new password does not match with the confirmation password');return;
+				    }
+				    $this->load->model('entities/user');
+				    // i wanna look into this later to find a way for customer from api to reset password
+				    if($this->webSessionManager->getCurrentUserProp('user_type') == 'customer'){
+				    	loadClass($this->load, 'customer');
+				    	$customer = $this->customer->getWhere(array('email' => $email),$count,0,1,false);
+				    	if($customer){
+				    		$customer = $customer[0];
+				    		$dataID = $customer->ID;
+				    	}else{
+				    		echo createJsonMessage('status',false,'message',"Sorry, it seems the user doesn't have an email account...");return;
+				    	}
+				    }
+				    $updatePassword = $this->user->updatePassword($dataID,$new,'customer');
+				    $customerName = isset($customer->fullname) ? $customer->fullname : $email;
+				    $this->load->model('mailer');
+					$this->mailer->sendCustomerMail($email,'password_reset_success',4,$customerName);
+				    if($updatePassword){
+				    	$arr['status'] = true;
+						$arr['message'] = 'your password has been reset! You may now login.';
+						echo json_encode($arr);
+						return;
+				    }else{
+				    	$senderEmail = appConfig('company_email');
+						$arr['status'] = false;
+						$arr['message'] = "error occured while updating your password. Please contact Administrator {$senderEmail}";
+						echo json_encode($arr);
+						return;
+				    }
+                    
+                }
+                
+			}
+		}
+		$this->forget();
 	}
 
 	/**
@@ -208,8 +356,29 @@ class Auth extends BaseController
 				}
 				return view('verify',$data);
 			}
-			
 		}
+		$this->forget();
+	}
+
+	/**
+	 * [inputValidate description]
+	 * @return bool
+	 */
+	private function inputValidate(){
+    	return isset($_POST) && count($_POST) > 0 && !empty($_POST) ?? false;
+	}
+
+	/**
+	 * This is to return the user based dashboard
+	 * 
+	 * @param  string $user
+	 * @return string
+	 */
+	private function getUserPage($user)
+	{
+		$link = array('admin' => 'vc/admin/dashboard','staff'=>'vc/staff/dashboard');
+		$roleName = $user->user_type;
+		return $link[$roleName];
 	}
 
 	public function logout()

@@ -2,17 +2,21 @@
 
 namespace App\Controllers;
 
-class Equipro extends BaseController {
+class Housing extends BaseController {
 
 	public function index()
 	{
+		helper('form');
 		return $this->home();
 	}
 
 	public function home(){
-		helper('form');
 		$data = array();
-		echo view('equipro/login',$data);
+		echo view('housing/login',$data);
+	}
+
+	public function register(){
+		
 	}
 
 }

@@ -6,21 +6,21 @@ use App\Models\Crud;
 
 /** 
 * This class is automatically generated based on the structure of the table.
-* And it represent the model of the occupant table
+* And it represent the model of the staff table
 */
-class Occupant extends Crud {
+class Staff extends Crud {
 
 /** 
 * This is the entity name equivalent to the table name
 * @var string
 */
-protected static $tablename = "Occupant"; 
+protected static $tablename = "Staff"; 
 
 /** 
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = ['title_id','email','lga_of_state','state_of_origin','date_first_app','date_present_app','staff_path'];
+public static $nullArray = ['title_id','email','gender','marital_status','lga_of_state','state_of_origin','num_children','grade','date_first_app','date_present_app','office_address','phone_number','hall','staff_path'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -44,13 +44,13 @@ public static $uploadDependency = [];
 * table id alone, the display field name provided must be a column in the table to replace the table id shown to the user.
 * @var array|string
 */
-public static $displayField = 'title_id';
+public static $displayField = 'surname';
 
 /** 
 * This array contains the fields that are unique
 * @var array
 */
-public static $uniqueArray = [];
+public static $uniqueArray = ['occupant_num','email'];
 
 /** 
 * This is an associative array containing the fieldname and the datatype
@@ -70,7 +70,7 @@ public static $labelArray = ['ID' => '','title_id' => '','occupant_num' => '','s
 * Associative array of fields in the table that have default value
 * @var array
 */
-public static $defaultArray = ['gender' => 'male','marital_status' => 'married','academic_status' => 'others','hall' => 'off_campus','status' => '1','date_modified' => 'current_timestamp()','date_created' => 'current_timestamp()'];
+public static $defaultArray = ['academic_status' => 'others','status' => '1','date_modified' => 'current_timestamp()','date_created' => 'current_timestamp()'];
 
 /** 
 *  This is an array containing an associative array of field that should be regareded as document field.
@@ -98,7 +98,7 @@ public static $relation = ['title' => array('title_id','id')
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['delete' => 'delete/occupant', 'edit' => 'edit/occupant'];
+public static $tableAction = ['delete' => 'delete/staff', 'edit' => 'edit/staff'];
 
 public function __construct(array $array = [])
 {

@@ -251,7 +251,6 @@ class Role extends Crud
 					'Manage Occupant'=>'vc/create/occupant',
 					'Manage Children'=>'vc/create/children',
 					'Manage Tenant'=>'vc/create/boy_quarters',
-					'Upload Users' => 'vc/create/users',
 				)
 			),
 			'Admin Management'=>array(

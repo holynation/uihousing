@@ -124,6 +124,81 @@ protected function getUser_table(){
 	return $resultObject;
 }
 
+public function createUser(array $data){
+	if(isset($data)){
+		// usernmae is email and password as defined in the form
+		$dataUser = array(
+			'firstname' => $data['firstname'],
+			'surname' => $data['lastname'],
+			'othername' => $data['othername'],
+			'occupant_num' => $data['staff_number'],
+			'designation_id' => $data['designation'],
+			'academic_status' => $data['appointment_status'],
+			'email' => $data['email'],
+			'date_created' => formatDate()
+		);
+
+		$newUser = new User();
+
+		$user = $this->find($data['email']); // find this phonenum in the database
+		if($user){
+			return 3;
+		}else{
+			// register user
+			$username = $data['email'];
+			$password = encode_password($data['password']);
+			$insertID = null;
+			$register = null;
+			$this->db->transBegin();
+
+			$staff = loadClass('staff');
+			$staffResult = $staff->getWhere(['occupant_num'=>$data['staff_number']],$count,0,1,false);
+			if($staffResult){
+				$staffResult = $staffResult[0];
+				$insertID = $staffResult->ID;
+
+				$staffResult->email = $data['email'];
+				$staffResult->firstname = $data['firstname'];
+				$staffResult->surname = $data['lastname'];
+				$staffResult->othername = $data['othername'];
+				$staffResult->designation_id = $data['designation'];
+				$staffResult->academic_status = $data['appointment_status'];
+				if(!$staffResult->update()){
+					return 2;
+				}
+				$register = true;
+			}
+			else{
+				$register = $this->db->table('staff')->insert($dataUser);
+				$insertID = $this->getLastInsertId();
+			}
+
+			if($register){
+				$dataUser = array(
+					'username' => $username,
+					'password' => $password,
+					'user_type' => 'staff',
+					'user_table_id' => $insertID,
+					'status' => '1'
+				);
+
+				$userReg = $this->db->table('user')->insert($dataUser);
+				
+				if($userReg){
+					$this->db->transCommit();
+					return 1; // this shows that user register
+				}else{
+					return 4; // error occured in the second insertion
+				}
+				
+			}else{
+				$this->db->transRollback();
+				return 2; // error in the database
+			}
+		}
+	}
+}
+
 //this function will return the last auto generated id of the last insert statement
 public function getLastInsertId(){
 	return getLastInsertId($this->db);

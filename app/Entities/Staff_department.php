@@ -6,15 +6,15 @@ use App\Models\Crud;
 
 /** 
 * This class is automatically generated based on the structure of the table.
-* And it represent the model of the occupant_department table
+* And it represent the model of the staff_department table
 */
-class Occupant_department extends Crud {
+class Staff_department extends Crud {
 
 /** 
 * This is the entity name equivalent to the table name
 * @var string
 */
-protected static $tablename = "Occupant_department"; 
+protected static $tablename = "Staff_department"; 
 
 /** 
 * This array contains the field that can be null
@@ -44,7 +44,7 @@ public static $uploadDependency = [];
 * table id alone, the display field name provided must be a column in the table to replace the table id shown to the user.
 * @var array|string
 */
-public static $displayField = 'title_id';
+public static $displayField = '';// this display field properties is used as a column in a query if a their is a relationship between this table and another table.In the other table, a field showing the relationship between this name having the name of this table i.e something like this. table_id. We cant have the name like this in the table shown to the user like table_id so the display field is use to replace that table_id.However,the display field name provided must be a column in the table to replace the table_id shown to the user,so that when the other model queries,it will use that field name as a column to be fetched along the query rather than the table_id alone.;
 
 /** 
 * This array contains the fields that are unique
@@ -57,14 +57,14 @@ public static $uniqueArray = [];
 * of the field
 * @var array
 */
-public static $typeArray = ['occupant_id' => 'int unsigned','departments_id' => 'int','status' => 'tinyint'];
+public static $typeArray = ['staff_id' => 'int unsigned','departments_id' => 'int','status' => 'tinyint'];
 
 /** 
 * This is a dictionary that map a field name with the label name that
 * will be shown in a form
 * @var array
 */
-public static $labelArray = ['ID' => '','occupant_id' => '','departments_id' => '','status' => ''];
+public static $labelArray = ['ID' => '','staff_id' => '','departments_id' => '','status' => ''];
 
 /** 
 * Associative array of fields in the table that have default value
@@ -89,7 +89,7 @@ public static $documentField = [];
 * entities
 * @var array
 */
-public static $relation = ['occupant' => array('occupant_id','id')
+public static $relation = ['staff' => array('staff_id','id')
 ,'departments' => array('departments_id','id')
 ];
 
@@ -98,28 +98,28 @@ public static $relation = ['occupant' => array('occupant_id','id')
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['delete' => 'delete/occupant_department', 'edit' => 'edit/occupant_department'];
+public static $tableAction = ['delete' => 'delete/staff_department', 'edit' => 'edit/staff_department'];
 
 public function __construct(array $array = [])
 {
 	parent::__construct($array);
 }
  
-public function getOccupant_idFormField($value = ''){
+public function getStaff_idFormField($value = ''){
 	$fk = null; 
- 	//change the value of this variable to array('table'=>'occupant','display'=>'occupant_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'occupant_name' as value from 'occupant' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('occupant', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
+ 	//change the value of this variable to array('table'=>'staff','display'=>'staff_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'staff_name' as value from 'staff' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('staff', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
 
 		if(is_null($fk)){
-			return $result = "<input type='hidden' name='occupant_id' id='occupant_id' value='$value' class='form-control' />";
+			return $result = "<input type='hidden' name='staff_id' id='staff_id' value='$value' class='form-control' />";
 		}
 
 		if(is_array($fk)){
 			
 			$result ="<div class='form-group'>
-			<label for='occupant_id'>Occupant</label>";
+			<label for='staff_id'>Staff</label>";
 			$option = $this->loadOption($fk,$value);
 			//load the value from the given table given the name of the table to load and the display field
-			$result.="<select name='occupant_id' id='occupant_id' class='form-control'>
+			$result.="<select name='staff_id' id='staff_id' class='form-control'>
 						$option
 					</select>";
 					$result.="</div>";
@@ -156,8 +156,8 @@ public function getStatusFormField($value = ''){
 			</div>";
 } 
 
-protected function getOccupant(){
-	$query = 'SELECT * FROM occupant WHERE id=?';
+protected function getStaff(){
+	$query = 'SELECT * FROM staff WHERE id=?';
 	if (!isset($this->array['ID'])) {
 		return null;
 	}
@@ -168,7 +168,7 @@ protected function getOccupant(){
 	if (empty($result)) {
 		return false;
 	}
-	$resultObject = new \App\Entities\Occupant($result[0]);
+	$resultObject = new \App\Entities\Staff($result[0]);
 	return $resultObject;
 }
 
