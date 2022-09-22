@@ -200,7 +200,8 @@ class Auth extends BaseController
 	public function forgetPassword(){
 		if(isset($_POST) && count($_POST) > 0 && !empty($_POST)){
 			if($_POST['task'] == 'reset'){
-				$email = trim($this->input->post('email',true));
+				$email = trim($this->request->getPost('email'));
+
 				if (!isNotEmpty($email)) {
 			        echo createJsonMessage('status',false,"message","empty field detected.please fill all required field and try again");
 			        return;
@@ -211,7 +212,8 @@ class Auth extends BaseController
 					echo json_encode($arr);
 					return;
 				}
-				$find = $this->user->find($email);
+				$user = loadClass('user');
+				$find = $user->find($email);
 				if(!$find){
 					$arr['status'] = false;
 					$arr['message'] = 'the email address appears not to be on our platform...';
@@ -222,7 +224,7 @@ class Auth extends BaseController
 				$sendMail = ($this->mailer->sendCustomerMail($email,'password_reset',3,$email)) ? true : false;
 				$message = "A link to reset your password has been sent to $email.If you don't see it, be sure to check your spam folders too!";
 				$arr['status'] = ($sendMail) ? true : false;
-				$arr['message'] = ($sendMail) ? $message : 'error occured while performing the operation,please check your network and try again later.';
+				$arr['message'] = ($sendMail) ? $message : 'error occured while performing the operation, please check your network and try again later.';
 				echo json_encode($arr);
 				return;
 			}
@@ -237,9 +239,9 @@ class Auth extends BaseController
 						echo json_encode($arr);
 						return;
                 	}
-                	$new = $this->input->post('password',true);
-                	$confirm = $this->input->post('confirm_password',true);
-                	$email = $this->input->post('email',true);
+                	$new = $this->request->getPost('password');
+                	$confirm = $this->request->getPost('confirm_password');
+                	$email = $this->request->getPost('email');
 				    $dataID = $email;
 
 				    if (!isNotEmpty($new,$confirm)) {
@@ -250,31 +252,18 @@ class Auth extends BaseController
 				    if ($new !== $confirm) {
 				       echo createJsonMessage('status',false,'message','new password does not match with the confirmation password');return;
 				    }
-				    $this->load->model('entities/user');
-				    // i wanna look into this later to find a way for customer from api to reset password
-				    if($this->webSessionManager->getCurrentUserProp('user_type') == 'customer'){
-				    	loadClass($this->load, 'customer');
-				    	$customer = $this->customer->getWhere(array('email' => $email),$count,0,1,false);
-				    	if($customer){
-				    		$customer = $customer[0];
-				    		$dataID = $customer->ID;
-				    	}else{
-				    		echo createJsonMessage('status',false,'message',"Sorry, it seems the user doesn't have an email account...");return;
-				    	}
-				    }
-				    $updatePassword = $this->user->updatePassword($dataID,$new,'customer');
-				    $customerName = isset($customer->fullname) ? $customer->fullname : $email;
-				    $this->load->model('mailer');
-					$this->mailer->sendCustomerMail($email,'password_reset_success',4,$customerName);
+				    $user = loadClass('user');
+				    $updatePassword = $user->updatePassword($dataID,$new,'staff');
+				    $customerName = $email;
+
 				    if($updatePassword){
 				    	$arr['status'] = true;
 						$arr['message'] = 'your password has been reset! You may now login.';
 						echo json_encode($arr);
 						return;
 				    }else{
-				    	$senderEmail = appConfig('company_email');
 						$arr['status'] = false;
-						$arr['message'] = "error occured while updating your password. Please contact Administrator {$senderEmail}";
+						$arr['message'] = "error occured while updating your password. Please contact Administrator";
 						echo json_encode($arr);
 						return;
 				    }
@@ -338,8 +327,6 @@ class Auth extends BaseController
 						$template = $this->mailer->mailTemplateRender($param,'account_created_individual');
 						$sendMail = ($this->mailer->sendCustomerMail($email,'welcome')) ? true : false;
 						if($sendMail){
-							$builder = $this->db->table('notification_setting');
-							$builder->replace(array('user_id'=>$id));
 							$data['success'] = "Your Account has been verified, welcome on board.<br /><br />Thank you!";
 						}else{
 							$data['error'] = 'There is an error in network connection, please try again later...';
@@ -348,7 +335,8 @@ class Auth extends BaseController
 					}else{
 						$data['error'] = 'There seems to be an error in performing the operation...';
 					}
-				}else if($mailType[$type] == 'forget'){
+				}
+				else if($mailType[$type] == 'forget'){
 					$data['type'] = $mailType[$type];
 					$data['email_hash'] = $email_hash;
 					$data['email_code'] = $hash;

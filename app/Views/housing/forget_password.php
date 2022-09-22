@@ -71,7 +71,7 @@
               <h4 class="mb-2">Forgot Password? 🔒</h4>
               <p class="mb-4">Enter your email and we'll send you instructions to reset your password</p>
 
-                <?php echo form_open("auth/forgetPassword", array('class' => 'mb-3', 'id' => 'resetForm')); ?>
+                <?php echo form_open("auth/forgetPassword", array('class' => 'mb-3', 'id' => 'resetPass')); ?>
                 <?= csrf_field(); ?>
                 <!-- this is the notification section -->
                 <div id="notify"></div>
@@ -91,9 +91,10 @@
                 <div class="mb-3">
                 </div>
                 <input type="hidden" name="isajax" value="true">
+                <input type="hidden" name="task" value="reset" />
                 <input type="hidden" id='base_path' value="<?php echo base_url(); ?>">
                 <div class="mb-3">
-                  <button class="btn btn-primary d-grid w-100" type="submit" id="btnLogin">Send Reset Link</button>
+                  <button class="btn btn-primary d-grid w-100" type="submit" id="btnReset">Send Reset Link</button>
                 </div>
               </form>
               <div class="text-center">
@@ -125,33 +126,32 @@
     <script src="<?php echo base_url("assets/js/main.js"); ?> "></script>
     <script src="<?php echo base_url('assets/js/custom.js'); ?>"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            var form = $('#loginForm');
-            var note = $("#notify");
-            note.text('').hide();
-
+        resetFunc();
+        function resetFunc(){
+            var form = $('#resetPass');
             form.submit(function(event) {
                 event.preventDefault();
-                loginStatus = true;
-                $("#btnLogin").html("Authenticating...").addClass('disabled').prop('disabled', true);
+                var note = $("#notify");
+                note.text('').hide();
+                $("#btnReset").html("processing...").addClass('disabled').prop('disabled', true);
                 submitAjaxForm($(this));
-                // $("#btnLogin").removeClass("disabled").removeAttr('disabled').html("Sign in");
             });
-        });
+        }
 
-        function ajaxFormSuccess(target, data) {
-            // using this to track ajax login auth
-            if (loginStatus) {
-                $("#notify").text('').show();
-                if (data.status) {
-                    var path = data.message;
-                    location.assign(path);
-                } else {
-                    $("#btnLogin").removeClass("disabled").removeAttr('disabled').html("Sign in");
-                    $("#notify").text(data.message).addClass("alert alert-danger alert-dismissible show text-center").css({
-                        "font-size": "12.368px"
-                    }).append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"></span></button>');
-                }
+        function ajaxFormSuccess(target,data){
+            var note = $("#notify");
+            if (data.status) {
+                note.show();
+                note.removeClass('alert alert-warning');
+                note.html("<p>"+data.message+"</p>").addClass("alert alert-success alert-dismissible fade show text-center");
+                $('#resetPass').trigger('reset');
+                $("#btnReset").html("Send Reset Link").removeClass('disabled').prop('disabled', false);
+            }
+            else{
+                note.show();
+                note.removeClass('alert alert-success');
+                note.html("<p>"+data.message+"</p>").addClass("alert alert-danger alert-dismissible fade show text-center");
+                $("#btnReset").html("Send Reset Link").removeClass('disabled').prop('disabled', false);
             }
         }
     </script>

@@ -844,6 +844,16 @@ function calcPercentageDiff($startVal, $endVal)
 
 function appConfig($mailKey)
 {
-	$mailLink = array('salt' => '_~2y~12~T31xd7x7b67FO', 'type' => array(1 => 'verify_account', 2 => 'verify_success', 3 => 'forget', 4 => 'forget_success', 5 => '2daysprior', 6 => 'subscription', 7 => 'suspension', 8 => 'plan_cancel', 9 => 'plan_change', 10 => 'renewed', 11 => 'new_browser', 12 => 'request_claims', 13 => 'payment_invoice', 14 => 'password_forget_token'), 'company_name' => 'Daabo', 'company_address' => 'Lagos', 'company_email' => 'info@daabo.com', 'footer_link' => "Daabo.com");
+	$mailLink = array(
+		'salt' => '_~2y~12~T31xd7x7b67FO',
+		'type' => array(
+			1 => 'verify_account', 2 => 'verify_success',
+			3 => 'forget', 4 => 'forget_success',
+		),
+		'company_name' => 'UIHousing',
+		'company_address' => 'University of Ibadan',
+		'company_email' => 'info@ui.edu.ng',
+		'footer_link' => "ui.edu.ng"
+	);
 	return $mailLink[$mailKey];
 }

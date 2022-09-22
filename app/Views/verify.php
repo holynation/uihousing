@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Verification Equipro</title>
+    <title>Verification UIHousing</title>
 
     <meta name="description" content="" />
 
@@ -76,27 +76,6 @@
                 <?php endif; } ?>
               <!-- end verify_account -->
 
-              <!-- using this to display response coming as JSON type -->
-                <?php  if(isset($type) && $type == 'verify_transaction'){
-                    $response = json_decode($response);
-                ?>
-                  <?php if($response->status){ ?>
-                      <div class="alert alert-success">
-                        <p class="text-center mt-2" style="font-size:18px;">
-                          Your transaction was successful. Kindly close the window
-                        </p>
-                      </div>
-                  <?php }else{ ?>
-                      <div class="alert alert-danger">
-                        <p class="text-center mt-3" style="font-size:18px;">
-                          <?php echo $response->message; ?>
-                        </p>
-                      </div>
-                  <?php } ?>
-
-                <?php } ?>
-              <!-- end display response as JSON -->
-
               <!-- error notification -->
                 <?php if(isset($error)): ?>
                 <div class="alert alert-danger">
@@ -104,6 +83,80 @@
                 </div>
                 <?php endif;  ?>
               <!-- end error notification -->
+
+            <!-- this is the reset password form -->
+            <?php if(isset($type) && $type == 'forget'){ ?>
+
+              <div class="nk-block-head mb-2">
+                  <div class="nk-block-head-content">
+                      <h5 class="nk-block-title">Change Password</h5>
+                  </div>
+              </div><!-- .nk-block-head -->
+
+              <!-- this is the notification section -->
+              <div id="notify"></div> 
+              <!-- end notification -->
+
+              <form action="<?php echo base_url('auth/forgetPassword'); ?>" method="post" role="form" id="verifyForm">
+                  <?php if(isset($email_hash, $email_code)) { ?>
+                  <input type="hidden" name="email_hash" id="email_hash" value="<?php echo $email_hash; ?>" />
+                  <input type="hidden" name="email_code" id="email_code" value="<?php echo $email_code; ?>" />
+                  <?php  } ?>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      placeholder="Enter your email address"
+                      value="<?php echo (isset($email)) ? $email : '';?>"
+                      readonly
+                    />
+                  </div>
+                  <div class="mb-3 form-password-toggle">
+                      <div class="d-flex justify-content-between">
+                        <label class="form-label" for="password">Password</label>
+                      </div>
+                      <div class="input-group input-group-merge">
+                        <input
+                          type="password"
+                          id="password"
+                          class="form-control"
+                          name="password"
+                          placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                          aria-describedby="password"
+                        />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                      </div>
+                    </div>
+                    <div class="mb-3 form-password-toggle">
+                      <div class="d-flex justify-content-between">
+                        <label class="form-label" for="confirm_password">Confirm Password</label>
+                      </div>
+                      <div class="input-group input-group-merge">
+                        <input
+                          type="password"
+                          id="confirm_password"
+                          class="form-control"
+                          name="confirm_password"
+                          placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                          aria-describedby="confirm_password"
+                        />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                      </div>
+                    </div>
+                  <input type="hidden" name="isajax">
+                  <input type="hidden" id='base_path' value="<?php echo base_url(); ?>">
+                  <input type="hidden" name="task" value="update">
+                  <div class="form-group">
+                      <button class="btn btn-primary d-grid w-100" type="submit" id="btnVerify">Submit</button>
+                  </div>
+              </form><!-- form -->
+            
+            <?php } ?>
+            <!-- end password reset form -->
+
             </div>
           </div>
           <!-- /Register -->
@@ -116,6 +169,38 @@
     <script src="<?php echo base_url("assets/vendor/libs/jquery/jquery.js"); ?> "></script>
     <script src="<?php echo base_url("assets/vendor/libs/popper/popper.js"); ?> "></script>
     <script src="<?php echo base_url("assets/vendor/js/bootstrap.js"); ?> "></script>
+    <script src="<?php echo base_url("assets/js/main.js"); ?> "></script>
+    <script src="<?php echo base_url('assets/js/custom.js'); ?>"></script>
     <!-- endbuild -->
+    <script>
+      $(function () {
+        var form = $('#verifyForm');
+        form.submit(function(event) {
+          event.preventDefault();
+          var note = $("#notify");
+          note.text('');
+          note.hide();
+          $("#btnVerify").html("processing...").addClass('disabled').prop('disabled', true);
+          submitAjaxForm($(this));
+        });
+      });
+
+      function ajaxFormSuccess(target,data){
+        var note = $("#notify");
+        if (data.status) {
+          note.show();
+          note.removeClass('alert alert-warning');
+          note.html("<p>"+data.message+"</p>").addClass("alert alert-success alert-dismissible fade show text-center").delay(10000);
+          $('#signForm').trigger('reset');
+          location.assign("<?php echo base_url('login'); ?>");
+        }
+        else{
+          note.show();
+          note.removeClass('alert alert-success');
+          note.html("<p>"+data.message+"</p>").addClass("alert alert-danger alert-dismissible fade show text-center");
+          $("#btnVerify").html("Submit").removeClass('disabled').prop('disabled', false);
+        }
+      }
+    </script>
   </body>
 </html>

@@ -50,7 +50,6 @@
 
   <body>
     <!-- Content -->
-
     <div class="container-xxl">
       <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
@@ -169,7 +168,7 @@
                     $("#btnLogin").removeClass("disabled").removeAttr('disabled').html("Sign in");
                     $("#notify").text(data.message).addClass("alert alert-danger alert-dismissible show text-center").css({
                         "font-size": "12.368px"
-                    }).append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"></span></button>');
+                    });
                 }
             }
         }

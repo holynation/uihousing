@@ -23,32 +23,6 @@ class AdminData extends Model
 	{
 		//check the permmission first
 		$result = array();
-		$hirers = loadClass('hirers');
-		$owners = loadClass('owners');
-		$equipments = loadClass('equipments');
-		$equipRequest = loadClass('equip_request');
-		$equipPayment = loadClass('equip_payment');
-		$withdrawalRequest = loadClass('withdrawal_request');
-		$equipOrder = loadClass('equip_order');
-		$reviews = loadClass('reviews');
-
-		$result['countData'] = array(
-			'hirers'=> $hirers->totalCount("where status='1'"),
-			'owners' => $owners->totalCount(),
-			'equipments' => $equipments->totalCount("where status='1'"),
-			'equipbooked' => $equipRequest->totalCount("where request_status='booked'"),
-			'equipReceived' => $equipRequest->totalCount("where request_status='received'"),
-			'equipReturned' => $equipRequest->totalCount("where request_status='returned'"),
-			'payTotal' => $equipPayment->getTotalAmount() ?? 0,
-			'payTotalDaily' => $equipPayment->getTotalAmount(true) ?? 0,
-			'payoutAmount' => $withdrawalRequest->getTotalAmountPayout() ?? 0,
-			'approvedOrder' => $equipOrder->totalCount("where order_status='accepted'"),
-			'pendingOrder' => $equipOrder->totalCount("where order_status='pending'"),
-			'reviews' => $reviews->totalCount()
-		);
-		$result['revenueDistrix'] = $equipPayment->getRevenueDistrix();
-		$result['orderStatusDistrix'] = $equipOrder->getOrderStatusDistrix();
-		$result['withdrawalStatusDistrix'] = $withdrawalRequest->getWithdrawalStatusDistrix();
 
 		// print_r($result);exit;
 		return $result;

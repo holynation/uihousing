@@ -208,11 +208,10 @@ public function updatePassword($dataID=null,$password=null,$type='')
 {
 	if(isset($dataID,$password)){
 		$password = encode_password(trim($password));
-		// $password = md5(trim($password));
 		$field = (is_numeric($dataID)) ? 'user_table_id' : 'username';
 		$dateChange = date('Y-m-d H:i:s');
-		$query = "update user set password = '$password',last_change_password='$dateChange' where $field=? and user_type=?";
-		$db=db_connect();
+		$query = "update user set password = '$password' where $field=? and user_type=?";
+		$db = db_connect();
 		$db->transBegin();
 		
 		$param = array($dataID,$type);

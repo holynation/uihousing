@@ -217,7 +217,7 @@
                     <input type="hidden" name="isajax" value="true">
                     <input type="hidden" id='base_path' value="<?php echo base_url(); ?>">
                     <div class="mb-3 col-lg-6 mx-auto">
-                      <button class="btn btn-primary d-grid w-100" type="submit" id="btnLogin">Register</button>
+                      <button class="btn btn-primary d-grid w-100" type="submit" id="btnReg">Register</button>
                     </div>
                   </form>
                   <p class="text-center">
@@ -265,13 +265,13 @@
 
               if(password == '' || confirm_password == ''){
                 note.show();
-                note.html('Password can not be empty...').addClass("alert alert-danger alert-dismissible show text-center").append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"></span></button>');
+                note.html('Password can not be empty...').addClass("alert alert-danger alert-dismissible show text-center");
                   $("#btnReg").removeClass("disabled").removeAttr('disabled').html("Register");
                   return false;
               }
               else if(password != confirm_password ){
                 note.show();
-                note.html('New password must match Confirm password...').addClass("alert alert-danger alert-dismissible show text-center").append('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"></span></button>');
+                note.html('New password must match Confirm password...').addClass("alert alert-danger alert-dismissible show text-center");
                 $("#btnReg").removeClass("disabled").removeAttr('disabled').html("Register");
                 return false;
               }else{

@@ -7,7 +7,7 @@
       <div class="card">
         <div class="card-body">
           <span class="fw-semibold d-block mb-0">Approved</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['approvedOrder']); ?></h3>
+          <h3 class="card-title mb-2"><?php echo number_format(@$countData['approvedOrder']); ?></h3>
           <a href="<?php echo base_url("vc/admin/view_model/equip_request?type=approved"); ?>">
             <small class="text-info fw-semibold">Total Approved Order
               <i class="bx bx-up-arrow-alt"></i>
@@ -19,141 +19,10 @@
     <div class="col-lg-4 col-md-6 col-6 mb-0">
       <div class="card">
         <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Pending</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['pendingOrder']); ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/equip_request?type=pending"); ?>">
-            <small class="text-danger fw-semibold">Total Pending Order
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Total Payments</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['payTotal']); ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/equip_payment?type=success"); ?>">
-            <small class="text-success fw-semibold">Total Payment Paid
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Total Amount</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['payTotalDaily']); ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/equip_payment?type=success"); ?>">
-            <small class="text-info fw-semibold">Total Daily Amount
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Total Payout</span>
-          <a href="<?php echo base_url("vc/admin/view_model/withdrawal_request?type=approved"); ?>">
-            <h3 class="card-title mb-2"><?php echo number_format($countData['payoutAmount']); ?></h3>
-            <small class="text-primary fw-semibold">Total Approved Amount
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
           <span class="fw-semibold d-block mb-0">Hirers</span>
-          <h3 class="card-title mb-2"><?php echo $countData['hirers']; ?></h3>
+          <h3 class="card-title mb-2"><?php echo @$countData['hirers']; ?></h3>
           <a href="<?php echo base_url("vc/admin/view_model/hirers"); ?>">
             <small class="text-success fw-semibold">Total Registered Hirers
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Owners</span>
-          <h3 class="card-title mb-2"><?php echo $countData['owners']; ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/owners"); ?>">
-            <small class="text-info fw-semibold">Total Registered Owners
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Equipments</span>
-          <h3 class="card-title mb-2"><?php echo $countData['equipments']; ?></h3>
-          <a href="<?php echo base_url("vc/admin/equipments"); ?>">
-            <small class="text-primary fw-semibold">Total Available Equipments
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Booked Equipments</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['equipbooked']); ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/equipments?type=booked"); ?>">
-            <small class="text-info fw-semibold">Total Equipments Booked
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Received Equipments</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['equipReceived']); ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/equipments?type=received"); ?>">
-            <small class="text-danger fw-semibold">Total Equipments Received
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Returned Equipments</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['equipReturned']); ?></h3>
-          <a href="<?php echo base_url("vc/admin/view_model/equipments?type=returned"); ?>">
-            <small class="text-success fw-semibold">Total Equipments Returned
-              <i class="bx bx-up-arrow-alt"></i>
-            </small>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 col-6 mb-0">
-      <div class="card">
-        <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Reviews</span>
-          <h3 class="card-title mb-2"><?php echo number_format($countData['reviews']); ?></h3>
-          <a href="<?php echo base_url("vc/create/reviews"); ?>">
-            <small class="text-success fw-semibold">Total Number of Reviews
               <i class="bx bx-up-arrow-alt"></i>
             </small>
           </a>

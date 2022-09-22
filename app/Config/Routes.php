@@ -75,12 +75,14 @@ $routes->add('truncate/(:any)', 'Actioncontroller::truncate/$1');
 $routes->add('mail/(:any)/(:any)', 'Actioncontroller::mail/$1/$2');
 $routes->add('changestatus/(:any)/(:any)/(:any)', 'Actioncontroller::changeStatus/$1/$2/$3');
 
+$routes->add('account/verify/(:any)/(:any)/(:any)', 'Auth::verify/$1/$2/$3');
 $routes->add('register', 'Auth::signup');
 $routes->add('login', 'Auth::login');
 $routes->add('logout', 'Auth::logout');
 $routes->add('forget_password', 'Auth::forget');
 $routes->add('auth/web', 'Auth::web');
 $routes->add('auth/register', 'Auth::register');
+$routes->add('auth/forgetPassword', 'Auth::forgetPassword');
 
 $routes->add('admin/dashboard', 'Viewcontroller::view/admin/dashboard');
 $routes->add('staff/dashboard', 'Viewcontroller::view/staff/dashboard');
