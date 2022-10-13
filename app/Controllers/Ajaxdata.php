@@ -35,6 +35,12 @@ class Ajaxdata extends BaseController
 			return $result[0];
 		}
 
+		public function lga($state){
+			$state = urldecode($state);
+			$result = loadLga($state);
+			echo $this->returnJSONFromNonAssocArray($result);
+		}
+
 		private function returnJSONTransformArray($query,$data=array(),$valMessage='',$errMessage=''){
 			$newResult=array();
 			$result = $this->db->query($query,$data);

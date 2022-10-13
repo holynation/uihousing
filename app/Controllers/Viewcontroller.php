@@ -7,6 +7,8 @@ use App\Models\ModelFormBuilder;
 use App\Models\TableWithHeaderModel;
 use App\Models\QueryHtmlTableModel;
 use App\Models\QueryHtmlTableObjModel;
+use App\Models\Custom\AdminData;
+use App\Models\Custom\StaffData;
 use CodeIgniter\I18n\Time;
 
 class Viewcontroller extends BaseController{
@@ -35,7 +37,7 @@ class Viewcontroller extends BaseController{
     $this->queryHtmlTableModel = new QueryHtmlTableModel;
     $this->queryHtmlTableObjModel = new QueryHtmlTableObjModel;
 
-    $this->adminData = new \App\Models\Custom\AdminData();
+    $this->adminData = new AdminData();
 
     if (!$this->webSessionManager->isSessionActive()) {
       header("Location:".base_url());exit;
@@ -213,12 +215,12 @@ private function getTitlePage(string $modelName){
 }
 
 private function staff($page,&$data){
+  $this->staffData = new StaffData;
   $staff = loadClass('staff');
   if($this->webSessionManager->getCurrentUserProp('user_type') == 'staff'){
     $staff->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
-
     $staff->load();
-    $this->staffData->setCustomer($staff);
+    $this->staffData->setStaff($staff);
     $data['staff'] = $staff;
   }
   else{
@@ -243,14 +245,39 @@ public function staffProfile(&$data)
     }
     $data['staff'] = $std;
   }
+  $data['db'] = $this->db;
 }
 
 public function staffChildren(&$data){
   $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
 }
 
+private function staffApply(&$data){
+  $allocation = loadClass('applicant_allocation');
+  $id = $data['staff']->ID;
+  $payload = $allocation->allNonObject($count,true,0,null,''," where staff_id='{$id}'");
+
+  $data['modelStatus'] = $payload ? true : false;
+  $data['modelPayload'] = $payload;
+  $data['modelFormBuilder'] = $this->modelFormBuilder;
+  $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
+  $data['webSessionManager'] = $this->webSessionManager;
+}
+
+private function staffPrint_application(&$data){
+  $id = $data['id'];
+  $allocation = loadClass('applicant_allocation');
+  $allocation->ID = $id;
+  if(!$allocation->load()){
+    $this->webSessionManager->setFlashMessage('error', "Allocation data can't be found");
+    redirect(base_url('vc/staff/apply'));return;
+  }
+  $data['allocation'] = $allocation;
+}
+
 public function staffTenant(&$data){
   $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
+  $data['modelFormBuilder'] = $this->modelFormBuilder;
 }
 
 //function for loading edit page for general application

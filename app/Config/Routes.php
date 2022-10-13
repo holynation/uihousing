@@ -52,6 +52,7 @@ $routes->group('vc', function ($routes) {
 
 $routes->add('edit/(:any)/(:any)', 'Viewcontroller::edit/$1/$2');
 $routes->add('ajaxData/savePermission', 'Ajaxdata::savePermission');
+$routes->add('ajaxData/lga/(:any)', 'Ajaxdata::lga/$1');
 
 $routes->group('mc', function ($routes) {
     $routes->add('add/(:any)/(:any)', 'Modelcontroller::add/$1/$2');

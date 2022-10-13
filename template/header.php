@@ -72,6 +72,7 @@
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
+          <?php $userType = $webSessionManager->getCurrentUserProp('user_type'); ?>
             <!-- Menu -->
             <?php include_once ROOTPATH."template/nav.php"; ?>
             <!-- / Menu -->
@@ -96,7 +97,7 @@
                     ?>
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                       <div class="nav-item d-flex align-items-center">
-                        <h4 class="my-3">Admin Dashboard</h4>
+                        <h4 class="my-3"><?= ucfirst($userType); ?> Dashboard</h4>
                       </div>
                       <ul class="navbar-nav flex-row align-items-center ms-auto">
                         <!-- User -->
@@ -120,7 +121,7 @@
                                   </div>
                                   <div class="flex-grow-1">
                                     <span class="fw-semibold d-block"><?php echo $fullname ?? ""; ?></span>
-                                    <small class="text-muted">Admin</small>
+                                    <small class="text-muted"><?= ucfirst($userType); ?></small>
                                   </div>
                                 </div>
                               </a>

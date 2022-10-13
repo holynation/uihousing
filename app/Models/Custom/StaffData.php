@@ -17,7 +17,7 @@ class StaffData extends Model
 	protected $db;
 	protected $request;
 
-	function __construct(RequestInterface $request=null)
+	public function __construct(RequestInterface $request=null)
 	{
 		helper(['string','array']);
 		$this->db = db_connect();
@@ -31,13 +31,11 @@ class StaffData extends Model
 		$this->staff = $staff;
 	}
 
-
 	public function loadDashboardInfo()
 	{
-		#get the iformatin for 
+		// get the iformatin for 
 		$result = array();
 		return $result;
 	}
-
 
 }

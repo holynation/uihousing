@@ -134,9 +134,10 @@ class Auth extends BaseController
 				}
 			}
 			$user = loadClass('user');
-			$find = $user->findBoth($username);
-			if ($find) {
-				$checkPass = decode_password(trim($password), $user->data()[0]['password']);
+			$array = array('username' => $username, 'status' => 1);
+			$user = $user->getWhere($array, $count, 0, 1, false);
+			if ($user) {
+				$checkPass = decode_password(trim($password), $user[0]->password);
 				if (!$checkPass) {
 					if ($isAjax) {
 						$arr['status'] = false;
@@ -148,40 +149,27 @@ class Auth extends BaseController
 						redirect(base_url('auth/login'));
 					}
 				}
-				$array = array('username' => $username, 'status' => 1, 'user_type' => 'admin');
-				$user = $user->getWhere($array, $count, 0, null, false);
-				if ($user == false) {
-					if ($isAjax) {
-						$arr['status'] = false;
-						$arr['message'] = "Invalid email or password";
-						echo json_encode($arr);
-						return;
-					} else {
-						$this->webSessionManager->setFlashMessage('error', 'invalid email or password');
-						redirect(base_url('/auth/login'));
-					}
-				} else {
-					$user = $user[0];
-					if($user->user_type != 'admin'){
-						$arr['status'] = true;
-						$arr['message'] = 'Oops, invalid username or password';
-						echo  json_encode($arr);
-						return;
-					}
-					$baseurl = base_url() . '/';
-					$this->webSessionManager->saveCurrentUser($user, true);
-					$baseurl .= $this->getUserPage($user);
-					if ($isAjax) {
-						$arr['status'] = true;
-						$arr['message'] = $baseurl;
-						echo  json_encode($arr);
-						return;
-					} else {
-						redirect($baseurl);
-						exit;
-					}
+				$user = $user[0];
+				if($user->user_type != 'admin' && $user->user_type != 'staff'){
+					$arr['status'] = true;
+					$arr['message'] = 'Oops, invalid username or password';
+					echo  json_encode($arr);
+					return;
 				}
-			} else {
+				$baseurl = base_url() . '/';
+				$this->webSessionManager->saveCurrentUser($user, true);
+				$baseurl .= $this->getUserPage($user);
+				if ($isAjax) {
+					$arr['status'] = true;
+					$arr['message'] = $baseurl;
+					echo  json_encode($arr);
+					return;
+				} else {
+					redirect($baseurl);
+					exit;
+				}
+			}
+			else {
 				if ($isAjax) {
 					$arr['status'] = false;
 					$arr['message'] = 'Invalid email or password';

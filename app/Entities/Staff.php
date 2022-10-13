@@ -336,6 +336,22 @@ protected function getDesignation(){
 	return $resultObject;
 }
 
+protected function getStaff_department(){
+	$query = 'SELECT * FROM staff_department WHERE staff_id=?';
+	if (!isset($this->array['ID'])) {
+		return null;
+	}
+	$id = $this->array['ID'];
+	$db = $this->db;
+	$result = $db->query($query,[$id]);
+	$result = $result->getResultArray();
+	if (empty($result)) {
+		return false;
+	}
+	$resultObject = new \App\Entities\Staff_department($result[0]);
+	return $resultObject;
+}
+
 public function delete($id=null,&$db=null)
 {  
     $db = $db ?? $this->db;

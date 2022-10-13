@@ -15,7 +15,7 @@ if($userType == 'staff'){
         <a href="<?php echo $dashLink; ?>" class="app-brand-link">
             <span class="app-brand-logo demo">
               <a href="<?php echo base_url($dashLink); ?>" class="logo-link">
-                  <img class="logo-img logo-img-lg" src="<?php echo base_url('assets/img/logo/logo_short.png'); ?>" alt="logo">
+                  <img class="logo-img logo-img-lg" src="<?php echo base_url('assets/img/logo/logo.png'); ?>" alt="logo" style="width:4rem;height:4rem;margin:0 auto;">
               </a>
             </span>
         </a>
@@ -64,5 +64,26 @@ if($userType == 'staff'){
             </ul>
         </li>
         <?php endforeach; } } ?>
+
+        <?php if($userType == 'staff'): ?>
+            <li class="menu-item mb-3">
+              <a href="<?php echo base_url('vc/staff/apply'); ?>" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-notepad"></i>
+                <div data-i18n="Apply">House Apply</div>
+              </a>
+            </li>
+            <li class="menu-item mb-3">
+              <a href="<?php echo base_url('vc/staff/tenant'); ?>" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user-plus"></i>
+                <div data-i18n="Tenant">Tenant</div>
+              </a>
+            </li>
+            <li class="menu-item mb-3">
+              <a href="<?php echo base_url('vc/staff/profile'); ?>" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user-circle"></i>
+                <div data-i18n="Profile">Profile</div>
+              </a>
+            </li>
+        <?php endif; ?>
     </ul>
 </aside>

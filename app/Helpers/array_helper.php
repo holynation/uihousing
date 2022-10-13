@@ -222,10 +222,11 @@ function loadStates(){
 	return $result;
 }
 function loadLga($state){
-	if (!file_exists("public/assets/states/$state")) {
+	$path = ENVIRONMENT == 'development' ? ROOTPATH."public/assets/states/$state" : ROOTPATH."assets/states/$state";
+	if (!file_exists($path)) {
 		return '';
 	}
-	$content =file_get_contents("public/assets/states/$state");
+	$content = file_get_contents($path);
 	$content = trim($content);
 	$result = explode("\n", $content);
 	for ($i=0; $i < count($result); $i++) { 

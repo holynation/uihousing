@@ -20,7 +20,7 @@ protected static $tablename = "Tenant";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = ['status','date_created','date_modified'];
+public static $nullArray = ['status','date_created','date_modified','relationship_main'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -114,11 +114,11 @@ public function getOccupant_fullnameFormField($value = ''){
 			</div>";
 } 
 public function getOccupant_statusFormField($value = ''){
-	$arr =array('student','academic','non_teaching','others');
-       $option = buildOptionUnassoc($arr,$value);
+	$arr =array('student'=>'Student','academic'=>'Academic','non_teaching'=>'Non Teaching','others'=>'Others');
+       $option = buildOptionUnassoc2($arr,$value);
        return "<div class='form-group'>
-       		<label for='gender' >Gender</label>
-              <select name='gender' id='gender' class='form-control'>
+       		<label for='occupant_status' >Occupant Status</label>
+              <select name='occupant_status' id='occupant_status' class='form-control'>
               $option
               </select>
 </div>";
@@ -131,8 +131,8 @@ public function getPhone_numberFormField($value = ''){
 } 
 public function getRelationship_mainFormField($value = ''){
 	return "<div class='form-group'>
-				<label for='relationship_main'>Relationship Main</label>
-				<input type='text' name='relationship_main' id='relationship_main' value='$value' class='form-control' required />
+				<label for='relationship_main'>Relationship</label>
+				<input type='text' name='relationship_main' id='relationship_main' value='$value' class='form-control' />
 			</div>";
 } 
 public function getDate_occupiedFormField($value = ''){

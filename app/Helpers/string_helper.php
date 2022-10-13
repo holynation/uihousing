@@ -19,6 +19,14 @@ if(!function_exists('toUserAgent'))
 	}
 }
 
+function deleteSpecialChar($str) {
+	// replace all special characters by empty string 
+	$res = str_replace( array( '%', '@', '\'', ';', '<', '>', '/','-','_'), ' ', $str);
+	$res = str_replace(' ', '', $res);
+	$res = strtoupper($res);
+	return $res;
+}
+
 /**
  * [formatToUTC description]
  * @param  string|null $date [description]

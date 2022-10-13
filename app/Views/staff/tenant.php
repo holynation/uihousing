@@ -17,6 +17,12 @@
 <!-- Content -->
 <div class="container-xxl flex-grow-1">
   <div class="row">
+    <div class="card d-flex">
+        <div class="my-2 d-grid justify-content-end">
+            <a href="#" class="btn btn-primary" data-bs-toggle='modal' data-bs-target='#myModal'><em class="menu-icon tf-icons bx bx-plus-medical"></em><span>Register Tenant</span>
+            </a>
+        </div>
+    </div>
     <!-- Content area -->
     <div class="content">
       <!-- Basic card -->
@@ -26,10 +32,10 @@
           <div class="card-inner mx-4 my-3">
             <?php
             $model = 'tenant';
-            $tableAttr = array('class'=>'table');
-            $tableExclude = array();
-            $tableAction = array();
-            $model_id = urldecode($id);
+            $tableAttr = ['class'=>'table'];
+            $tableExclude = isset($staff) && $staff ? ['staff_id'] : [];
+            $tableAction = [];
+            $model_id = isset($id) && $id ? urldecode($id) : $staff->ID;
             $tableData = $tableWithHeaderModel->openTableHeader($model,$tableAttr,$tableExclude)
               ->appendTableAction($tableAction)
               ->appendEmptyIcon('<i class="icon-stack-empty mr-2 mb-2 icon-2x"></i>')
@@ -46,7 +52,80 @@
     </div>
     <!-- /content area -->
   </div>
+
+  <!-- this is the modal form -->
+  <div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                  <h5 class="modal-title">Tenant Form</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+            </div>
+            <div class="modal-body">
+              <?php
+                  $hidden = ['staff_id'=>$staff->ID];
+                  $showStatus = false;
+                  $exclude = [];
+                  $submitLabel = 'Submit';
+
+                  $formContent = $modelFormBuilder->start('tenant_table')
+                  ->appendInsertForm('tenant',true,$hidden,'',$showStatus,$exclude)
+                  ->addSubmitLink(null)
+                  ->appendResetButton('Reset','btn btn-md btn-danger mt-3')
+                  ->appendSubmitButton($submitLabel,'btn btn-md btn-primary mt-3')
+                  ->build();
+
+                  echo $formContent;
+              ?>
+            </div>
+        </div>
+    </div>
+  </div>
 </div>
 
 <?php include_once ROOTPATH."template/footer.php"; ?>
+
+<script>
+    var inserted = false;
+
+    let formGrp = $('div[class=form-group]');
+    let formLabel = $('label[for]');
+    formGrp.addClass('mb-3');
+    formLabel.addClass('form-label');
+
+    $(document).ready(function() {
+      $('.modal').on('hidden.bs.modal', function (e) {
+        if (inserted) {
+          inserted = false;
+          location.reload();
+        }
+      });
+      $('.close').click(function(event) {
+        if (inserted) {
+          inserted = false;
+          location.reload();
+        }
+      });
+    });
+
+    function ajaxFormSuccess(target,data) {
+      if (data.status) {
+        inserted=true;
+        $('form').trigger('reset');
+      }
+      showNotification(data.status,data.message);
+      var btnSubmit = $('input[type=submit]');
+      btnSubmit.removeClass('disabled');
+      btnSubmit.prop('disabled', false);
+      btnSubmit.html('Submit');
+      if (typeof target ==='undefined') {
+        location.reload();
+      }
+    }
+</script>
 
