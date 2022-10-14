@@ -119,38 +119,6 @@ public function getDate_createdFormField($value = ''){
 	return "";
 } 
 
-protected function getTitle(){
-	$query = 'SELECT * FROM title WHERE id=?';
-	if (!isset($this->array['ID'])) {
-		return null;
-	}
-	$id = $this->array['ID'];
-	$db = $this->db;
-	$result = $db->query($query,[$id]);
-	$result = $result->getResultArray();
-	if (empty($result)) {
-		return false;
-	}
-	$resultObject = new \App\Entities\Title($result[0]);
-	return $resultObject;
-}
-
-protected function getDesignation(){
-	$query = 'SELECT * FROM designation WHERE id=?';
-	if (!isset($this->array['ID'])) {
-		return null;
-	}
-	$id = $this->array['ID'];
-	$db = $this->db;
-	$result = $db->query($query,[$id]);
-	$result = $result->getResultArray();
-	if (empty($result)) {
-		return false;
-	}
-	$resultObject = new \App\Entities\Designation($result[0]);
-	return $resultObject;
-}
-
 
  
 }

@@ -6,6 +6,12 @@ namespace App\Models\Custom;
 
 use CodeIgniter\Model;
 use App\Models\WebSessionManager;
+use App\Entities\Allocation;
+use App\Entities\Applicant_allocation;
+use App\Entities\Staff;
+use App\Entities\Children;
+use App\Entities\Tenant;
+use App\Entities\Departments;
 
 class AdminData extends Model
 {	
@@ -22,7 +28,19 @@ class AdminData extends Model
 	public function loadDashboardData()
 	{
 		//check the permmission first
-		$result = array();
+		$result = [];
+
+		$result['countData'] = [
+			'approvedAllocation' => Allocation::totalCount("where status='approved'"),
+			'applicant' => Applicant_allocation::totalCount(),
+			'staff' => Staff::totalCount(),
+			'children' => Children::totalCount(),
+			'tenant'=> Tenant::totalCount(),
+			'departments'=> Departments::totalCount(),
+		];
+		$result['applicantDistrix'] = Applicant_allocation::init()->getApplicantDistrix();
+		$result['genderDistrix'] = Applicant_allocation::init()->getGenderDistrix();
+		$result['staffStatusDistrix'] = Applicant_allocation::init()->getStaffStatusDistrix();
 
 		// print_r($result);exit;
 		return $result;

@@ -11,9 +11,9 @@
                   <div class="card-body">
                     <div class="d-flex align-items-start align-items-sm-center gap-4">
                       <?php if (@$staff->staff_path): ?>
-                        <img class="d-block rounded" src="<?php echo base_url($staff->img_path) ?>" alt="staff profile picture" width="100" height="100">
+                        <img class="d-block rounded" src="<?php echo $staff->staff_path; ?>" alt="staff photo" width="100" height="100">
                         <?php else: ?>
-                          <img class="d-block rounded" src="<?php echo base_url('assets/img/avatar2.jpg'); ?>" alt="staff profile picture" width="100" height="100">
+                          <img class="d-block rounded" src="<?php echo base_url('assets/img/avatar2.jpg'); ?>" alt="staff photo" width="100" height="100">
                         <br /> 
                       <?php endif ?>
                       <div class="showupload btn btn-primary btn-block">Change Photo</div>
@@ -43,10 +43,10 @@
                   </div>
                   <hr class="my-0" />
                   <div class="card-body">
-                    <form id="formAccountSettings" method="POST" onsubmit="return false">
+                    <form id="staffProfile" method="POST" action="<?= base_url('mc/update/staff/'.$staff->ID.'/1') ?>">
                       <div class="row">
                         <div class="mb-3 col-md-6">
-                          <label class="form-label" for="country">Title</label>
+                          <label class="form-label" for="title">Title</label>
                           <select id="title" name="title" class="select2 form-select">
                             <option value="">Select Title</option>
                             <?php
@@ -57,22 +57,33 @@
                           </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="firstName" class="form-label">First Name</label>
+                          <label for="occupant_num" class="form-label">Staff Number</label>
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="occupant_num"
+                            name="occupant_num"
+                            value="<?= $staff->occupant_num; ?>"
+                            readonly
+                          />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                          <label for="firstname" class="form-label">First Name</label>
                           <input
                             class="form-control"
                             type="text"
                             id="firstname"
                             name="firstname"
                             value="<?= $staff->firstname; ?>"
-                            autofocus
+                            
                           />
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="lastName" class="form-label">Last Name</label>
+                          <label for="surname" class="form-label">Last Name</label>
                           <input class="form-control" type="text" name="surname" id="surname" value="<?= $staff->surname; ?>" />
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="lastName" class="form-label">Other Name</label>
+                          <label for="othername" class="form-label">Other Name</label>
                           <input class="form-control" type="text" name="othername" id="othername" value="<?= $staff->othername; ?>" />
                         </div>
                         <div class="mb-3 col-md-6">
@@ -128,7 +139,7 @@
                           <select id="academic_status" name="academic_status" class="select2 form-select">
                             <option value="">Select Academic Status</option>
                             <?php
-                              $arr =array('student'=>'Student','academic'=>'Academic','non_teaching'=>'Non Teaching','others'=>'Others');
+                              $arr = array('student'=>'Student','academic'=>'Academic','non_teaching'=>'Non Teaching','others'=>'Others');
                               $option = buildOptionUnassoc2($arr,$staff->academic_status);
                               echo $option;
                             ?>
@@ -160,7 +171,7 @@
                           </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label class="form-label" for="country">Designation</label>
+                          <label class="form-label" for="designation_id">Designation</label>
                           <select id="designation_id" name="designation_id" class="select2 form-select">
                             <option value="">Select Designation</option>
                             <?php
@@ -197,13 +208,14 @@
       submitAjaxForm($(this));
      });
 
-     $("#form_change_password").submit(function(event) {
-       event.preventDefault();
-       if ($('#')) {}
-     });
+     $('#staffProfile').submit(function(e){
+      e.preventDefault();
+      submitAjaxForm($(this));
+     })
   }
   function ajaxFormSuccess(target,data) {
-    reportAndRefresh(target,data);
+    data = JSON.stringify(data);
+    reportAndRefresh(target,data,'reload',3000);
   }
  </script>
 

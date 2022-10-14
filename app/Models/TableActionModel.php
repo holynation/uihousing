@@ -76,8 +76,8 @@ class TableActionModel extends Model
 		$classname = empty($classname)?lcfirst(get_class($object)):ucfirst($classname);
 		$link = base_url("changeStatus/$classname");
 		$label = "Change Status";
-		if (strtolower($classname) == 'extend_equip_request') {
-			$status = is_array($object)?$object['request_status']:$object->request_status;
+		if (strtolower($classname) == 'applicant_allocation') {
+			$status = is_array($object)?$object['applicant_status']:$object->applicant_status;
 			$status = strtolower($status);
 			if ($status == 'rejected') {
 				$label = "Approve Request";

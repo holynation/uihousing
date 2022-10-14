@@ -73,9 +73,15 @@ if($userType == 'staff'){
               </a>
             </li>
             <li class="menu-item mb-3">
+              <a href="<?php echo base_url('vc/staff/children'); ?>" class="menu-link">
+                <img class="menu-icon tf-icons" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA30lEQVRIS2NkoDFgpLH5DCPLAjFgcJpDg/QkkH5FTPCSEkR+QAO5oYZ+AdKbqW1BMNBANqihX4H0JmpbAAoiC6ihJ2gRRMQ4GEMNMXHACtTlDMSCaLrfA/l7gfg3PpuJsQCUcpRwGHIPKA5KUTgBIQsUkcIdlyGg+LiPSxKfBaAgcUJKObjM+AWU2AfEoCAjKQ50gKp1gRgUDPiCCCR3GYivkGoBSL0MEL8E4hAczl8DFBcH4ifkBBGynkgcBizHE79gKUKRDNMPswBmIDofpz2jFlAtDgjFJcVxMIItAAA89SIZ2f30/gAAAABJRU5ErkJggg=="/>
+                <div data-i18n="Tenant">Staff Children</div>
+              </a>
+            </li>
+            <li class="menu-item mb-3">
               <a href="<?php echo base_url('vc/staff/tenant'); ?>" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user-plus"></i>
-                <div data-i18n="Tenant">Tenant</div>
+                <div data-i18n="Tenant">Staff Tenant</div>
               </a>
             </li>
             <li class="menu-item mb-3">

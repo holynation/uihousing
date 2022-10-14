@@ -19,7 +19,7 @@ class Modelcontroller extends BaseController
 	private $_publicDirectory = ROOTPATH."public/uploads/";
 	// RULE: date_created comes first,then date_modified or any named date
 	// NOTE: it only accept two diff date,nothing more than that.
-	private $_dateParam = array('company_device' => array('date_created', 'date_updated'), 'default' => array('date_created', 'date_modified'));
+	private $_dateParam = array('default' => array('date_created', 'date_modified'));
 	private $accessControl;
 	private $webSessionManager;
 	private $modelControllerCallback;
@@ -361,7 +361,7 @@ class Modelcontroller extends BaseController
 			$publicDestination .= $naming;
 			if (move_uploaded_file($_FILES[$name]['tmp_name'], $destination)) {
 				$destination = $this->createFileSymlink($publicDestination, $destination);
-				$message = $destination;
+				$message = base_url($destination);
 				return true;
 			} else {
 				$message = "error while uploading file. please try again";
@@ -388,16 +388,6 @@ class Modelcontroller extends BaseController
 			if ($max_height > 0 && $D[1] > $max_height) {
 				return FALSE;
 			}
-
-			// if ($min_width > 0 && $D[0] < $min_width)
-			// {
-			// 	return FALSE;
-			// }
-
-			// if ($min_height > 0 && $D[1] < $min_height)
-			// {
-			// 	return FALSE;
-			// }
 		}
 
 		return TRUE;

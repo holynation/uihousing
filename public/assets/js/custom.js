@@ -335,7 +335,7 @@ $(document).ready(function(){
     event.preventDefault();
     var link = $(this).attr('href');
     var action = $(this).text();
-    if (confirm("are you sure you want to "+action+" item?")) {
+    if (confirm("Are you sure you want to "+action+" item?")) {
       sendAjax(null,link,'','get');
     }
   });

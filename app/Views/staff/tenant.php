@@ -17,12 +17,15 @@
 <!-- Content -->
 <div class="container-xxl flex-grow-1">
   <div class="row">
+    <?php if(isset($staff)): ?>
     <div class="card d-flex">
         <div class="my-2 d-grid justify-content-end">
             <a href="#" class="btn btn-primary" data-bs-toggle='modal' data-bs-target='#myModal'><em class="menu-icon tf-icons bx bx-plus-medical"></em><span>Register Tenant</span>
             </a>
         </div>
     </div>
+    <?php endif; ?>
+
     <!-- Content area -->
     <div class="content">
       <!-- Basic card -->
@@ -53,6 +56,7 @@
     <!-- /content area -->
   </div>
 
+  <?php if(isset($staff)): ?>
   <!-- this is the modal form -->
   <div class="modal fade" tabindex="-1" id="myModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-top" role="document">
@@ -86,6 +90,7 @@
         </div>
     </div>
   </div>
+<?php endif; ?>
 </div>
 
 <?php include_once ROOTPATH."template/footer.php"; ?>

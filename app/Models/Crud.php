@@ -6,6 +6,8 @@ use App\Entities;
 
 class Crud
 {
+	use CrudInfo;
+	
 	protected $array = []; #array containing the field  and value of the object inform of an associateive array
 	protected $foreignKeyEnd='_id';
 	static $baseurl;
@@ -591,7 +593,7 @@ class Crud
 	public function exists($id,&$dbObject=null,&$arrData=array()){
 		$tablename =$this->getTableName();
 		$wherelist = $this->buildExistWhereString($id,$data);
-		$arrData = $data;
+		$arrData = $id;
 		$query = "select count(*) as countData from $tablename where $wherelist";
 		$result = $this->query($query,$data,$dbObject);
 		return $result[0]['countData'] != 0;
@@ -625,6 +627,7 @@ class Crud
 	 * @return bool
 	 */
 	public function insert(&$dbObject=null,&$message=''){
+		$tablename =$this->getTableName();
 		if (empty($this->array)) {
 			throw new \Exception("no value to insert");return;
 		}
@@ -632,13 +635,12 @@ class Crud
 			if(is_array($checkMsg)){
 				$string = implode(",", $checkMsg);
 				$string = ellipsize($string,40,1);
-				$message = "'$string' already exists";
+				$message = "Oops, {$tablename}[{$string}] data already exist";
 			}else{
 				$message = 'Oops, data already exist';
 			}
 			return false;
 		}
-		$tablename =$this->getTableName();
 		$query = "INSERT INTO $tablename (";
 		$data = array();
 		$partTwo ="";
@@ -1443,12 +1445,16 @@ class Crud
 	}
 
 	//function to get all the total value of item present in  the database
-	public function totalCount($whereClause = '')
+	public static function totalCount($whereClause = '')
 	{
-		$tablename = strtolower(static::$tablename);
-		$query = "select count(*) as total from $tablename $whereClause";
-		$result = $this->query($query);
-		return ($result) ? $result[0]['total'] : 0;
+		$crud = new Crud();
+		return $crud->totalEntityCount(static::$tablename,$whereClause);
+	}
+
+	public static function totalSum(string $column,$whereClause='')
+	{
+		$crud = new Crud();
+		return $crud->totalEntitySum(static::$tablename,$column,$whereClause);
 	}
 
 	public function removeProp($property)

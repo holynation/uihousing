@@ -8,6 +8,9 @@ use CodeIgniter\Model;
 use App\Models\WebSessionManager;
 use App\Models\Mailer;
 use CodeIgniter\HTTP\RequestInterface;
+use App\Entities\Children;
+use App\Entities\Tenant;
+use App\Entities\Applicant_allocation;
 
 class StaffData extends Model
 {
@@ -35,6 +38,12 @@ class StaffData extends Model
 	{
 		// get the iformatin for 
 		$result = array();
+		$result['countData'] = [
+			'children' => Children::totalCount("where staff_id = '{$this->staff->ID}'") ?? 0,
+			'tenant' => Tenant::totalCount("where staff_id = '{$this->staff->ID}'") ?? 0,
+			'application' => Applicant_allocation::totalCount("where staff_id = '{$this->staff->ID}'") ?? 0
+		];
+		$result['applicantDistrix'] = Applicant_allocation::init()->getApplicantDistrix();
 		return $result;
 	}
 

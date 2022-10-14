@@ -158,12 +158,35 @@ class Actioncontroller extends BaseController
 		 */
 		public function changeStatus(string $model, string $value ,int $id)
 		{
-			if($model == 'extend_equip_request'){
+			if($model == 'applicant_allocation'){
 				$model = loadClass($model);
-				$model->request_status = $value;
+				$model->applicant_status = $value;
+				$this->db->transBegin();
 				if($model->update($id)){
-					echo createJsonMessage('status',true,'message',"action successfully performed",'flagAction',true);
+					$allocation = loadClass('allocation');
+					$allocation->applicant_allocation_id = $id;
+					$allocation->status = 'approved';
+					if(!$allocation->insert($this->db,$message)){
+						$this->db->transRollback();
+						$message = $message ?? "something went wrong";
+						echo createJsonMessage('status',false,'message',$message,'flagAction',false);return;
+					}
+					$this->db->transCommit();
+					echo createJsonMessage('status',true,'message',"You have successfully performed the action",'flagAction',true);
 				}else{
+					$this->db->transRollback();
+					echo createJsonMessage('status',false,'message',"action can't be performed",'flagAction',false);
+				}
+			}
+			else if($model == 'allocation'){
+				$model = loadClass($model);
+				$model->status = $value;
+				$this->db->transBegin();
+				if($model->update($id)){
+					$this->db->transCommit();
+					echo createJsonMessage('status',true,'message',"You have successfully performed the action",'flagAction',true);
+				}else{
+					$this->db->transRollback();
 					echo createJsonMessage('status',false,'message',"action can't be performed",'flagAction',false);
 				}
 			}

@@ -157,7 +157,7 @@ public function getEmailFormField($value = ''){
 			</div>";
 } 
 public function getGenderFormField($value = ''){
-	$arr =array('male','female');
+	$arr = array('male','female');
        $option = buildOptionUnassoc($arr,$value);
        return "<div class='form-group'>
        		<label for='gender' >Gender</label>
@@ -167,7 +167,7 @@ public function getGenderFormField($value = ''){
 </div>";
 } 
 public function getMarital_statusFormField($value = ''){
-	$arr =array('single','married','others');
+	$arr = array('single','married','others');
 	$option = buildOptionUnassoc($arr,$value);
 	return "<div class='form-group'>
 	<label for='marital_status' >Marital Status</label>
@@ -314,7 +314,7 @@ protected function getTitle(){
 	$result = $db->query($query,[$id]);
 	$result = $result->getResultArray();
 	if (empty($result)) {
-		return false;
+		return null;
 	}
 	$resultObject = new \App\Entities\Title($result[0]);
 	return $resultObject;

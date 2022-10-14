@@ -112,12 +112,12 @@ private function admin($page,&$data)
   $path ='vc/admin/'.$page;
 
   // this approach is use so as to allow this page pass through using a path that is already permitted
-  if ($page=='permission') {
+  if ($page == 'permission') {
     $path ='vc/create/role';
   }
 
   if($page == 'view_model' || $page == 'view_more'
-    || $page == 'children' || $page == 'occupant'
+    || $page == 'children' || $page == 'occupant' || $page == 'print_application'
   ){
     $path = 'vc/admin/view_model/staff';
   }
@@ -207,6 +207,23 @@ private function adminView_more(&$data){
   $data['modelInfo'] = false;
 }
 
+private function adminApplicant_allocation(&$data){
+  $allocation = loadClass('applicant_allocation');
+  $payload = $allocation->all($count,false,0,null,'order by date_created desc'," where applicant_status = 'pending'");
+
+  $data['modelStatus'] = $payload ? true : false;
+  $data['modelPayload'] = $payload;
+  $data['webSessionManager'] = $this->webSessionManager;
+}
+
+private function adminAllocation(&$data){
+  $allocation = loadClass('allocation');
+  $payload = $allocation->all($count,false,0,null,'order by date_created desc');
+
+  $data['modelStatus'] = $payload ? true : false;
+  $data['modelPayload'] = $payload;
+}
+
 private function getTitlePage(string $modelName){
   $result = [
     'staff' => 'staff'
@@ -250,6 +267,7 @@ public function staffProfile(&$data)
 
 public function staffChildren(&$data){
   $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
+  $data['modelFormBuilder'] = $this->modelFormBuilder;
 }
 
 private function staffApply(&$data){
@@ -265,12 +283,14 @@ private function staffApply(&$data){
 }
 
 private function staffPrint_application(&$data){
+  if ($this->webSessionManager->getCurrentUserProp('user_type')=='admin') {
+    $this->admin('print_application',$data);
+  }
   $id = $data['id'];
   $allocation = loadClass('applicant_allocation');
   $allocation->ID = $id;
   if(!$allocation->load()){
-    $this->webSessionManager->setFlashMessage('error', "Allocation data can't be found");
-    redirect(base_url('vc/staff/apply'));return;
+    return redirect()->back()->with('error', "Allocation data can't be found");
   }
   $data['allocation'] = $allocation;
 }

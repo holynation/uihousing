@@ -20,7 +20,7 @@ protected static $tablename = "Allocation";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = [];
+public static $nullArray = ['status','date_created','date_modified'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -50,27 +50,27 @@ public static $displayField = 'email';
 * This array contains the fields that are unique
 * @var array
 */
-public static $uniqueArray = [];
+public static $uniqueArray = ['applicant_allocation_id'];
 
 /** 
 * This is an associative array containing the fieldname and the datatype
 * of the field
 * @var array
 */
-public static $typeArray = ['staff_id' => 'int','category_id' => 'int','application_date' => 'timestamp','status' => 'enum','date_modified' => 'timestamp','date_created' => 'timestamp'];
+public static $typeArray = ['applicant_allocation_id' => 'int','status' => 'enum','date_modified' => 'timestamp','date_created' => 'timestamp'];
 
 /** 
 * This is a dictionary that map a field name with the label name that
 * will be shown in a form
 * @var array
 */
-public static $labelArray = ['ID' => '','staff_id' => '','category_id' => '','application_date' => '','status' => '','date_modified' => '','date_created' => ''];
+public static $labelArray = ['ID' => '','applicant_allocation_id' => '','status' => '','date_modified' => '','date_created' => ''];
 
 /** 
 * Associative array of fields in the table that have default value
 * @var array
 */
-public static $defaultArray = ['application_date' => 'current_timestamp()','status' => 'pending','date_modified' => 'current_timestamp()','date_created' => 'current_timestamp()'];
+public static $defaultArray = ['status' => 'pending','date_modified' => 'current_timestamp()','date_created' => 'current_timestamp()'];
 
 /** 
 *  This is an array containing an associative array of field that should be regareded as document field.
@@ -89,7 +89,7 @@ public static $documentField = [];
 * entities
 * @var array
 */
-public static $relation = ['staff' => array('staff_id','id')
+public static $relation = ['applicant_allocation' => array('applicant_allocation_id','id')
 ,'category' => array('category_id','id')
 ];
 
@@ -105,21 +105,21 @@ public function __construct(array $array = [])
 	parent::__construct($array);
 }
  
-public function getStaff_idFormField($value = ''){
+public function getApplicant_allocation_idFormField($value = ''){
 	$fk = null; 
  	//change the value of this variable to array('table'=>'staff','display'=>'staff_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'staff_name' as value from 'staff' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('staff', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
 
 		if(is_null($fk)){
-			return $result = "<input type='hidden' name='staff_id' id='staff_id' value='$value' class='form-control' />";
+			return $result = "<input type='hidden' name='applicant_allocation_id' id='applicant_allocation_id' value='$value' class='form-control' />";
 		}
 
 		if(is_array($fk)){
 			
 			$result ="<div class='form-group'>
-			<label for='staff_id'>Staff</label>";
+			<label for='applicant_allocation_id'>Applicant</label>";
 			$option = $this->loadOption($fk,$value);
 			//load the value from the given table given the name of the table to load and the display field
-			$result.="<select name='staff_id' id='staff_id' class='form-control'>
+			$result.="<select name='applicant_allocation_id' id='applicant_allocation_id' class='form-control'>
 						$option
 					</select>";
 					$result.="</div>";
@@ -127,34 +127,6 @@ public function getStaff_idFormField($value = ''){
 		}
 		
 }
-public function getCategory_idFormField($value = ''){
-	$fk = null; 
- 	//change the value of this variable to array('table'=>'category','display'=>'category_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'category_name' as value from 'category' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('category', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
-
-		if(is_null($fk)){
-			return $result = "<input type='hidden' name='category_id' id='category_id' value='$value' class='form-control' />";
-		}
-
-		if(is_array($fk)){
-			
-			$result ="<div class='form-group'>
-			<label for='category_id'>Category</label>";
-			$option = $this->loadOption($fk,$value);
-			//load the value from the given table given the name of the table to load and the display field
-			$result.="<select name='category_id' id='category_id' class='form-control'>
-						$option
-					</select>";
-					$result.="</div>";
-		return $result;
-		}
-		
-}
-public function getApplication_dateFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='application_date'>Application Date</label>
-				<input type='text' name='application_date' id='application_date' value='$value' class='form-control' required />
-			</div>";
-} 
 public function getStatusFormField($value = ''){
 	return "<div class='form-group'>
 				<label for='status'>Status</label>
@@ -162,47 +134,25 @@ public function getStatusFormField($value = ''){
 			</div>";
 } 
 public function getDate_modifiedFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='date_modified'>Date Modified</label>
-				<input type='text' name='date_modified' id='date_modified' value='$value' class='form-control' required />
-			</div>";
+	return "";
 } 
 public function getDate_createdFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='date_created'>Date Created</label>
-				<input type='text' name='date_created' id='date_created' value='$value' class='form-control' required />
-			</div>";
+	return "";
 } 
 
-protected function getStaff(){
-	$query = 'SELECT * FROM staff WHERE id=?';
-	if (!isset($this->array['ID'])) {
+protected function getApplicant_allocation(){
+	$query = 'SELECT * FROM applicant_allocation WHERE id=?';
+	if (!isset($this->array['applicant_allocation_id'])) {
 		return null;
 	}
-	$id = $this->array['ID'];
+	$id = $this->array['applicant_allocation_id'];
 	$db = $this->db;
 	$result = $db->query($query,[$id]);
 	$result = $result->getResultArray();
 	if (empty($result)) {
 		return false;
 	}
-	$resultObject = new \App\Entities\Staff($result[0]);
-	return $resultObject;
-}
-
-protected function getCategory(){
-	$query = 'SELECT * FROM category WHERE id=?';
-	if (!isset($this->array['ID'])) {
-		return null;
-	}
-	$id = $this->array['ID'];
-	$db = $this->db;
-	$result = $db->query($query,[$id]);
-	$result = $result->getResultArray();
-	if (empty($result)) {
-		return false;
-	}
-	$resultObject = new \App\Entities\Category($result[0]);
+	$resultObject = new \App\Entities\Applicant_allocation($result[0]);
 	return $resultObject;
 }
 

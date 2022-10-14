@@ -98,7 +98,7 @@ public static $relation = ['staff' => array('staff_id','id')
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['delete' => 'delete/applicant_allocation', 'edit' => 'edit/applicant_allocation'];
+public static $tableAction = ['print application'=>'vc/staff/print_application','delete' => 'delete/applicant_allocation', 'edit' => 'edit/applicant_allocation'];
 
 public function __construct(array $array = [])
 {
@@ -211,6 +211,30 @@ protected function getCategory(){
 	}
 	$resultObject = new \App\Entities\Category($result[0]);
 	return $resultObject;
+}
+
+public static function init()
+{
+	return new Applicant_allocation;
+}
+
+public function getApplicantDistrix()
+{
+    $query = "select date_format(cast(a.date_created as date), '%M') as application_date,round(count(a.staff_id)) as total from applicant_allocation a where year(a.date_created) = year(curdate()) and a.applicant_status = 'pending' group by month(a.date_created)";
+    $result = $this->query($query);
+    return $result ? $result : [['application_date'=>'None', 'total' => 0]];
+}
+
+public function getGenderDistrix(){
+	$query = "SELECT upper(gender) as label, count(gender) as value from applicant_allocation where year(date_created) = year(curdate()) group by gender order by label asc";
+	$result = $this->query($query);
+	return $result;
+}
+
+public function getStaffStatusDistrix(){
+	$query = "SELECT upper(academic_status) as label, count(academic_status) as value from staff where year(date_created) = year(curdate()) group by academic_status order by label asc";
+	$result = $this->query($query);
+	return $result;
 }
 
 

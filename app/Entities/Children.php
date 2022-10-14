@@ -115,8 +115,8 @@ public function getFullnameFormField($value = ''){
 			</div>";
 } 
 public function getGenderFormField($value = ''){
-	$arr =array('male','female');
-       $option = buildOptionUnassoc($arr,$value);
+	$arr =array('male'=>'Male','female'=>'Female');
+       $option = buildOptionUnassoc2($arr,$value);
        return "<div class='form-group'>
        		<label for='gender' >Gender</label>
               <select name='gender' id='gender' class='form-control'>
@@ -131,10 +131,7 @@ public function getBirthdateFormField($value = ''){
 			</div>";
 } 
 public function getStatusFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='status'>Status</label>
-				<input type='text' name='status' id='status' value='$value' class='form-control' required />
-			</div>";
+	return "";
 } 
 public function getDate_modifiedFormField($value = ''){
 	return "";
