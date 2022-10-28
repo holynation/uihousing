@@ -12,7 +12,7 @@ class Housing extends BaseController {
 
 	public function home(){
 		$data = array();
-		echo view('housing/login',$data);
+		echo view('housing/index',$data);
 	}
 
 	public function register(){
