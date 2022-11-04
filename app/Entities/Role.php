@@ -242,6 +242,7 @@ class Role extends Crud
 				'children' => array(
 					'Applicant Allocation' => 'vc/admin/applicant_allocation',
 					'Allocation' => 'vc/admin/allocation',
+					'Upload Applicant' => 'vc/admin/upload_applicant'
 				)
 			),
 			'Users Management'=>array(
@@ -279,7 +280,7 @@ class Role extends Crud
 			'Extra Section' => array(
 				'class' => 'bx-layout',
 				'children' => array(
-
+					'Upload' => 'mc/upload_applicant'
 				)
 			)
 		);

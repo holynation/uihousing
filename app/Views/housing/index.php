@@ -43,8 +43,8 @@
                     <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact Us</a></li>
                 </ul>
-                <a class="btn btn-primary ms-auto" href="<?= base_url('register'); ?>" target="_blank">
-                Sign up
+                <a class="btn btn-primary ms-auto" href="<?= base_url('login'); ?>" target="_blank">
+                Login
                 </a>
                 
             </div>

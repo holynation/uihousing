@@ -44,7 +44,7 @@ class Modelcontroller extends BaseController
 
 		if ($this->webSessionManager->getCurrentuserProp('user_type') == 'admin') {
 			$role = loadClass('role');
-			$role->checkWritePermission();
+			// $role->checkWritePermission();
 		}
 	}
 
@@ -897,5 +897,421 @@ class Modelcontroller extends BaseController
 		$admin->load();
 		$role = $admin->role;
 		return $adminData->getCanViewPages($role);
+	}
+
+	private function getDepartmentByName(string $name){
+		$name = $this->db->escapeLikeString($name);
+		$query = "SELECT id from departments where name like '%$name%' ESCAPE '!'";
+		$result = $this->db->query($query);
+		if($result->getNumRows() > 0){
+			$result = $result->getResultArray()[0];
+			return $result['id'];
+		}
+		return false;
+	}
+
+	private function getDesignationByName(string $name){
+		$name = $this->db->escapeLikeString($name);
+		$query = "SELECT id from designation where designation_name like '%$name%' ESCAPE '!'";
+		$result = $this->db->query($query);
+		if($result->getNumRows() > 0){
+			$result = $result->getResultArray()[0];
+			return $result['id'];
+		}
+		return false;
+	}
+
+	private function getStaffByNum(string $num){
+		$query = "SELECT id from staff where occupant_num  = '$num'";
+		$result = $this->db->query($query);
+		if($result->getNumRows() > 0){
+			$result = $result->getResultArray()[0];
+			return $result['id'];
+		}
+		return false;
+	}
+
+	private function updateStaffInfo(array $data,$id){
+		$query = $this->db->table('staff');
+		$query = $query->update($data, ['id' => $id]);
+		return $query;
+	}
+
+	private function designationMapName(string $name){
+		$result = [
+			'HEO' => 'Higher Executive Officer',
+			'EO' => 'Executive Officer',
+			'E.O.' => 'Executive Officer',
+			'E. O.' => 'Executive Officer',
+			'MIS' => 'Medical lab. Scientist',
+			'ASO' => 'Asst. Security Officer',
+			'S.W.S.' => 'Senior Workshop Supervisor',
+			'PEO' => 'Principal Executive Ofiicer',
+			'P.E.O.' => 'Principal Executive Ofiicer',
+			'PEO II' => 'Principal Executive Officer II',
+			'PEO I' => 'Principal Executive Officer I',
+			'A.O.' => 'Administrative Officer'
+
+		];
+		if(array_key_exists($name, $result)){
+			return $result[$name];
+		}
+		return $name;
+	}
+
+	private function hallMapping(string $name){
+		$result = [
+			'Off Campus' => 'off_campus',
+			'Abadina' => 'campus',
+		];
+		if(array_key_exists($name, $result)){
+			return $result[$name];
+		}
+		return 'off_campus';
+	}
+
+	private function formatToDate($name){
+		$result = '';
+		if(strpos($name, '/') !== false){
+            $result = formatDateWithSlash($name);
+		}
+		else if(preg_match('~[A-Za-z]~', $name)){
+			try{
+				$result = formatToDateOnly(trim($name));
+			}catch(Exception $e){
+				$result = formatToUTC();
+			}
+		}
+		return $result;
+	}
+
+	private function splitName(string $name){
+		$fullname = str_replace('"','', $name); // replace , with single space
+		$fullname = str_replace(',',' ', $name); // replace , with single space
+		$fullname = str_replace('  ',' ', $fullname); // replace double with single space
+		$splitName = explode(' ', $fullname);
+		if (count($splitName) < 2) {
+			print_r($name);
+			echo "Name not valid\n";
+			return [];
+		}else{
+			$lastname = $splitName[0];
+			$firstname = strlen($splitName[1] <= 2 && count($splitName) > 2) ? $splitName[2] : $splitName[1];
+			$middlename = count($splitName)>2?$splitName[2]:'';
+			return [$lastname, $firstname, $middlename];
+		}
+	}
+
+	private function createAccount(string $table,array $data){
+		$query = $this->db->table($table);
+		return $query->insert($data);
+	}
+
+	private function generateApplicantCode(){
+		$orderStart = '100000011';
+		$query = "select applicant_code as code from applicant_allocation order by ID desc limit 1";
+		$result = $this->db->query($query);
+		$result = $result->getResultArray();
+		if($result && $result[0]['code']){
+			[$label,$temp] = explode('UIH',$result[0]['code']);
+			$orderStart = ($temp) ? $temp+1 : $orderStart;
+		}
+		return 'UIH'.$orderStart;
+	}
+
+	private function validateApplicant($staff){
+		$query = "SELECT * from applicant_allocation a where a.staff_id = '$staff' and cast(date_created as date) = curdate() order by id desc limit 1";
+		$result = $this->db->query($query);
+		if($result->getNumRows() <= 0){
+			return false;
+		}
+		return $result->getResultArray()[0];
+	}
+
+	public function upload_applicant(){
+		$content = $this->loadUploadedFileContent(false, 'bulk_applicant');
+		$content = trim($content);
+		$array = stringToCsv($content);
+		$header = array_shift($array);
+
+		$staffIndex = array_search('staff_num', $header);
+		$nameIndex = array_search('name', $header);
+		$departIndex = array_search('department', $header);
+		$designIndex = array_search('designation', $header);
+		$appointIndex = array_search('appointment_date', $header);
+		$gradeIndex = array_search('grade', $header);
+		$hallIndex = array_search('present_all', $header);
+		$dateAppIndex = array_search('date_of_application', $header);
+
+		$insertString = '';
+		$query = "insert ignore into staff (occupant_num,surname,firstname,othername,marital_status,grade,designation_id,date_first_app,hall) values ";
+		$this->db->transBegin();
+		foreach($array as $data){
+			$staffNum = trim($data[$staffIndex]);
+			$name = $data[$nameIndex];
+			if(count($data) == 12 && isset($data[3])){ // incase name split into 2 column
+				$name .= ' '.$data[3];
+			}
+			$name = $this->splitName(trim($name));
+			if(count($name) <= 0){
+				continue;
+			}
+			$lastname = $name[0];
+			$firstname = $name[1];
+			$middlename = $name[2];
+			if(!$staffNum){
+				echo "{$lastname} no staff number \n";
+				continue;
+			}
+			$hall = $this->hallMapping(trim($data[$hallIndex]));
+			$department = $this->getDepartmentByName(trim($data[$departIndex]));
+			$appDate = $this->formatToDate(trim($data[$dateAppIndex]));
+			// $appDate = trim($data[$dateAppIndex]);
+			// $appDate = formatToUTC();
+
+			if($id = $this->getStaffByNum($staffNum)){
+				$this->updateStaffInfo(['hall' => $hall],$id);
+
+				// create user auth account
+				$userData = ['username'=>$staffNum,'password'=>encode_password($staffNum),'user_type'=>'staff','user_table_id'=>$id,'status'=>'1'];
+				$builder = $this->db->table('user');
+				$result = $builder->getWhere(['username'=>$staffNum]);
+				if($result->getNumRows() > 0){
+					continue;
+				}
+
+				if(!$this->createAccount('user',$userData)){
+					$this->db->transRollback();
+					echo "{$staffNum} user account not created\n";
+				}
+				
+				// create applicant
+				$hall = 'campus';
+				$applicantData = ['applicant_code'=>$this->generateApplicantCode(),'staff_id'=>$id,'category_id'=>'1','marriage'=>'married','departments_id'=>$department,'hall_location'=>$hall,'date_created'=>$appDate,'applicant_status'=>'approved'];
+
+				if($applicant = $this->validateApplicant($id){
+					$data = ['applicant_allocation_id'=>$applicant['id'], 'status' => 'approved'];
+
+					// update the applicant_allocation table first and insert into allocation
+					$this->db->table('applicant_allocation')
+						->update(['applicant_status'=>'approved'],
+							['id'=>$applicant['id']]);
+
+					if(!$this->createAccount('allocation',$data)){
+						$this->db->transRollback();
+						echo "{$staffNum} allocation not created\n";
+					}
+				}else{
+					if(!$this->createAccount('applicant_allocation',$applicantData)){
+						$this->db->transRollback();
+						echo "{$staffNum} allocation not created\n";
+					}
+					$allocationID = lastInsertId();
+					$data = ['applicant_allocation_id'=>$allocationID, 'status' => 'approved'];
+					if(!$this->createAccount('allocation',$data)){
+						$this->db->transRollback();
+						echo "{$staffNum} allocation not created\n";
+					}
+				}
+				
+				$this->db->transCommit();
+				echo "{$staffNum} created \n";
+			}else{
+				$designation = $this->getDesignationByName($this->designationMapName(trim($data[$designIndex])));
+				$appointmentDate = $this->formatToDate(trim($data[$appointIndex]));
+				$grade = trim($data[$gradeIndex]);
+				$hall = 'campus';
+				
+				if(strpos($staffNum, '/') === false){ // checking if '/' exist
+					$insertString = '( '.$this->db->escape($staffNum).', '.$this->db->escape($lastname).', '.$this->db->escape($firstname).', '.$this->db->escape($middlename).', "married",'.$this->db->escape($grade).', '.$this->db->escape($designation).', '.$this->db->escape($appointmentDate).', '.$this->db->escape($hall).') on duplicate key update occupant_num = values(occupant_num),surname = values(surname),firstname = values(firstname),othername = values(othername),marital_status = values(marital_status),grade = values(grade),designation_id = values(designation_id),date_first_app = values(date_first_app),hall = values(hall) ';
+				}else{
+					$insertString = "(".$this->db->escapeString($staffNum).", ".$this->db->escapeString($lastname).", ".$this->db->escapeString($firstname).", ".$this->db->escapeString($middlename).", 'married',".$this->db->escapeString($grade).", ".$this->db->escapeString($designation).", ".$this->db->escapeString($appointmentDate).", ".$this->db->escapeString($hall)." ) on duplicate key update occupant_num = values(occupant_num),surname = values(surname),firstname = values(firstname),othername = values(othername),marital_status = values(marital_status),grade = values(grade),designation_id = values(designation_id),date_first_app = values(date_first_app),hall = values(hall) ";
+				}
+				$query .= $insertString;
+				// echo $query;exit;
+
+				$result = $this->db->query($query);
+				if (!$result) {
+					$this->db->transRollback();
+					echo "{$staffNum} not inserted\n";
+				}else{
+					$lastInsertId = getLastInsertId($this->db);
+					// creating user account username => staff_num and password => staff_num
+					$userData = ['username'=>$staffNum,'password'=>encode_password($staffNum),'user_type'=>'staff','user_table_id'=>$lastInsertId,'status'=>'1'];
+
+					$builder = $this->db->table('user');
+					$result = $builder->getWhere(['username'=>$staffNum]);
+					if($result->getNumRows() > 0){
+						continue;
+					}
+
+					if(!$this->createAccount('user',$userData)){
+						$this->db->transRollback();
+						echo "{$staffNum} user account not created\n";
+					}
+
+					// creating applicant
+					$applicantData = ['applicant_code'=>$this->generateApplicantCode(),'staff_id'=>$lastInsertId,'category_id'=>'1','marriage'=>'married','departments_id'=>$department,'hall_location'=>$hall,'date_created'=>$appDate,'applicant_status'=>'approved'];
+
+					if($applicant = $this->validateApplicant($lastInsertId){
+						$data = ['applicant_allocation_id'=>$applicant['id'], 'status' => 'approved'];
+
+						// update the applicant_allocation table first and insert into allocation
+						$this->db->table('applicant_allocation')
+							->update(['applicant_status'=>'approved'],
+								['id'=>$applicant['id']]);
+
+						if(!$this->createAccount('allocation',$data)){
+							$this->db->transRollback();
+							echo "{$staffNum} allocation not created\n";
+						}
+					}else{
+						if(!$this->createAccount('applicant_allocation',$applicantData)){
+							$this->db->transRollback();
+							echo "{$staffNum} allocation not created\n";
+						}
+						$allocationID = lastInsertId();
+						$data = ['applicant_allocation_id'=>$allocationID, 'status' => 'approved'];
+						if(!$this->createAccount('allocation',$data)){
+							$this->db->transRollback();
+							echo "{$staffNum} allocation not created\n";
+						}
+					}
+					$this->db->transCommit();
+					echo "{$staffNum} created\n";
+				}
+			}
+		}
+
+		echo "Successfully uploaded";
+	}
+
+	public function upload_applicant_fresh(){
+		$content = $this->loadUploadedFileContent(false, 'bulk_applicant');
+		$content = trim($content);
+		$array = stringToCsv($content);
+		$header = array_shift($array);
+
+		$staffIndex = array_search('staff_num', $header);
+		$nameIndex = array_search('name', $header);
+		$departIndex = array_search('department', $header);
+		$designIndex = array_search('designation', $header);
+		$appointIndex = array_search('appointment_date', $header);
+		$gradeIndex = array_search('grade', $header);
+		$hallIndex = array_search('present_all', $header);
+		$dateAppIndex = array_search('date_of_application', $header);
+
+		$insertString = '';
+		$query = "insert ignore into staff (occupant_num,surname,firstname,othername,marital_status,grade,designation_id,date_first_app,hall) values ";
+		$this->db->transBegin();
+		foreach($array as $data){
+			$staffNum = trim($data[$staffIndex]);
+			$name = $data[$nameIndex];
+			if(count($data) == 12 && isset($data[3])){ // incase name split into 2 column
+				$name .= ' '.$data[3];
+			}
+			$name = $this->splitName(trim($name));
+			if(count($name) <= 0){
+				continue;
+			}
+			$lastname = $name[0];
+			$firstname = $name[1];
+			$middlename = $name[2];
+			if(!$staffNum){
+				echo "{$lastname} no staff number \n";
+				continue;
+			}
+			$hall = $this->hallMapping(trim($data[$hallIndex]));
+			$department = $this->getDepartmentByName(trim($data[$departIndex]));
+			// $appDate = $this->formatToDate(trim($data[$dateAppIndex]));
+			// $appDate = trim($data[$dateAppIndex]);
+			$appDate = formatToUTC($appDate);
+
+			if($id = $this->getStaffByNum($staffNum)){
+				$this->updateStaffInfo(['hall' => $hall],$id);
+
+				// create user auth account
+				$userData = ['username'=>$staffNum,'password'=>encode_password($staffNum),'user_type'=>'staff','user_table_id'=>$id,'status'=>'1'];
+				$builder = $this->db->table('user');
+				$result = $builder->getWhere(['username'=>$staffNum]);
+				if($result->getNumRows() > 0){
+					continue;
+				}
+
+				if(!$this->createAccount('user',$userData)){
+					$this->db->transRollback();
+					echo "{$staffNum} user account not created\n";
+				}
+				
+				// create applicant
+				$applicantData = ['applicant_code'=>$this->generateApplicantCode(),'staff_id'=>$id,'category_id'=>'1','marriage'=>'married','departments_id'=>$department,'hall_location'=>$hall,'date_created'=>$appDate];
+
+				$builder = $this->db->table('applicant_allocation');
+				$result = $builder->getWhere(['staff_id'=>$id]);
+				if($result->getNumRows() > 0){
+					continue;
+				}
+				
+				if(!$this->createAccount('applicant_allocation',$applicantData)){
+					$this->db->transRollback();
+					echo "{$staffNum} allocation not created\n";
+				}
+				$this->db->transCommit();
+				echo "{$staffNum} created \n";
+			}else{
+				$designation = $this->getDesignationByName($this->designationMapName(trim($data[$designIndex])));
+				$appointmentDate = $this->formatToDate(trim($data[$appointIndex]));
+				$grade = trim($data[$gradeIndex]);
+
+				// if ($insertString) {
+				// 	$insertString .= ',';
+				// }
+				
+				if(strpos($staffNum, '/') === false){ // checking if '/' exist
+					$insertString = '( '.$this->db->escape($staffNum).', '.$this->db->escape($lastname).', '.$this->db->escape($firstname).', '.$this->db->escape($middlename).', "married",'.$this->db->escape($grade).', '.$this->db->escape($designation).', '.$this->db->escape($appointmentDate).', '.$this->db->escape($hall).') on duplicate key update occupant_num = values(occupant_num),surname = values(surname),firstname = values(firstname),othername = values(othername),marital_status = values(marital_status),grade = values(grade),designation_id = values(designation_id),date_first_app = values(date_first_app),hall = values(hall) ';
+				}else{
+					$insertString = "(".$this->db->escapeString($staffNum).", ".$this->db->escapeString($lastname).", ".$this->db->escapeString($firstname).", ".$this->db->escapeString($middlename).", 'married',".$this->db->escapeString($grade).", ".$this->db->escapeString($designation).", ".$this->db->escapeString($appointmentDate).", ".$this->db->escapeString($hall)." ) on duplicate key update occupant_num = values(occupant_num),surname = values(surname),firstname = values(firstname),othername = values(othername),marital_status = values(marital_status),grade = values(grade),designation_id = values(designation_id),date_first_app = values(date_first_app),hall = values(hall) ";
+				}
+				$query .= $insertString;
+				// echo $query;exit;
+
+				$result = $this->db->query($query);
+				if (!$result) {
+					$this->db->transRollback();
+					echo "{$staffNum} not inserted\n";
+				}else{
+					$lastInsertId = getLastInsertId($this->db);
+					// creating user account username => staff_num and password => staff_num
+					$userData = ['username'=>$staffNum,'password'=>encode_password($staffNum),'user_type'=>'staff','user_table_id'=>$lastInsertId,'status'=>'1'];
+
+					$builder = $this->db->table('user');
+					$result = $builder->getWhere(['username'=>$staffNum]);
+					if($result->getNumRows() > 0){
+						continue;
+					}
+					if(!$this->createAccount('user',$userData)){
+						$this->db->transRollback();
+						echo "{$staffNum} user account not created\n";
+					}
+
+					// creating applicant
+					$applicantData = ['applicant_code'=>$this->generateApplicantCode(),'staff_id'=>$lastInsertId,'category_id'=>'1','marriage'=>'married','departments_id'=>$department,'hall_location'=>$hall,'date_created'=>$appDate];
+
+					$builder = $this->db->table('applicant_allocation');
+					$result = $builder->getWhere(['staff_id'=>$lastInsertId]);
+					if($result->getNumRows() > 0){
+						continue;
+					}
+					if(!$this->createAccount('applicant_allocation',$applicantData)){
+						$this->db->transRollback();
+						echo "{$staffNum} allocation not created\n";
+					}
+					$this->db->transCommit();
+					echo "{$staffNum} created\n";
+				}
+			}
+		}
+
+		echo "Successfully uploaded";
 	}
 }

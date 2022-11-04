@@ -685,6 +685,14 @@ function formatToDateOnly($dateTime)
 	return $date->format('Y-m-d');
 }
 
+function formatDateWithSlash(string $date){
+	$tempDate = explode("/",trim($date));
+    $day = ($tempDate[0] <= 12) ? $tempDate[1] : $tempDate[0];
+    $month = ($tempDate[0] <= 12) ? $tempDate[0] : $tempDate[1];
+    $year = $tempDate[2] ?? '';
+    return $year."-".$month."-".$day;
+}
+
 function isTimePassed($start, $end, $limit = 30)
 {
 	$expiration = "+$limit minutes";

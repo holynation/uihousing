@@ -63,6 +63,7 @@ $routes->group('mc', function ($routes) {
     $routes->add('template/(:any)', 'Modelcontroller::template/$1');
     $routes->add('export/(:any)', 'Modelcontroller::export/$1');
     $routes->add('sFile/(:any)', 'Modelcontroller::modelFileUpload/$1');
+    $routes->add('upload_applicant', 'Modelcontroller::upload_applicant');
 });
 
 $routes->group('ac', function ($routes) {

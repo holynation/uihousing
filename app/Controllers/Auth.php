@@ -141,11 +141,11 @@ class Auth extends BaseController
 				if (!$checkPass) {
 					if ($isAjax) {
 						$arr['status'] = false;
-						$arr['message'] = "invalid email or password";
+						$arr['message'] = "invalid username or password";
 						echo  json_encode($arr);
 						return;
 					} else {
-						$this->webSessionManager->setFlashMessage('error', 'invalid email or password');
+						$this->webSessionManager->setFlashMessage('error', 'invalid username or password');
 						redirect(base_url('auth/login'));
 					}
 				}
@@ -172,11 +172,11 @@ class Auth extends BaseController
 			else {
 				if ($isAjax) {
 					$arr['status'] = false;
-					$arr['message'] = 'Invalid email or password';
+					$arr['message'] = 'Invalid username or password';
 					echo json_encode($arr);
 					exit;
 				} else {
-					$this->webSessionManager->setFlashMessage('error', 'invalid email or password');
+					$this->webSessionManager->setFlashMessage('error', 'invalid username or password');
 					redirect(base_url('auth/login'));
 				}
 			}

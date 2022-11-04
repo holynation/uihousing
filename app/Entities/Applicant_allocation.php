@@ -20,7 +20,7 @@ protected static $tablename = "Applicant_allocation";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = ['dob','applicant_status','date_modified','date_created'];
+public static $nullArray = ['dob','address','present_accommodation','applicant_status','date_modified','date_created'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -57,14 +57,14 @@ public static $uniqueArray = [];
 * of the field
 * @var array
 */
-public static $typeArray = ['applicant_code'=>'varchar','staff_id' => 'int','category_id' => 'int','dob' => 'date','gender' => 'enum','address' => 'text','applicant_status' => 'enum','date_modified' => 'timestamp','date_created' => 'timestamp'];
+public static $typeArray = ['applicant_code' => 'varchar','staff_id' => 'int','category_id' => 'int','dob' => 'date','gender' => 'enum','address' => 'text','marriage' => 'enum','departments_id' => 'int','present_accommodation' => 'int','hall_location' => 'enum','applicant_status' => 'enum','date_modified' => 'timestamp','date_created' => 'timestamp'];
 
 /** 
 * This is a dictionary that map a field name with the label name that
 * will be shown in a form
 * @var array
 */
-public static $labelArray = ['ID' => '','applicant_code'=>'','staff_id' => '','category_id' => '','dob' => '','gender' => '','address' => '','applicant_status' => '','date_modified' => '','date_created' => ''];
+public static $labelArray = ['ID' => '','applicant_code' => '','staff_id' => '','category_id' => '','dob' => '','gender' => '','address' => '','marriage' => '','departments_id' => '','present_accommodation' => '','hall_location' => '','applicant_status' => '','date_modified' => '','date_created' => ''];
 
 /** 
 * Associative array of fields in the table that have default value
@@ -91,6 +91,7 @@ public static $documentField = [];
 */
 public static $relation = ['staff' => array('staff_id','id')
 ,'category' => array('category_id','id')
+,'present_accommodation' => array('present_accommodation_id','id')
 ];
 
 /** 
@@ -98,27 +99,25 @@ public static $relation = ['staff' => array('staff_id','id')
 * be changed in the formConfig model file for flexibility
 * @var array
 */
-public static $tableAction = ['print application'=>'vc/staff/print_application','delete' => 'delete/applicant_allocation', 'edit' => 'edit/applicant_allocation'];
+public static $tableAction = ['delete' => 'delete/applicant_allocation', 'edit' => 'edit/applicant_allocation'];
 
 public function __construct(array $array = [])
 {
 	parent::__construct($array);
 }
-
+ 
 public function getApplicant_codeFormField($value = ''){
 	$value = ($value) ? $value : $this->generateApplicantCode();
 	return "<div class='form-group'>
 				<label for='applicant_code'>Applicant Code</label>
 				<input type='text' name='applicant_code' id='applicant_code' value='$value' class='form-control' required readonly />
 			</div>";
-}
- 
+} 
 public function getStaff_idFormField($value = ''){
-	return getStaffOption($value);
+	return getStaffOption($value);		
 }
 public function getCategory_idFormField($value = ''){
-	$fk = ['table'=>'category','display'=>'category_name']; 
- 	//change the value of this variable to array('table'=>'category','display'=>'category_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'category_name' as value from 'category' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('category', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
+	$fk = ['table'=>'category','display'=>'category_name'];
 
 		if(is_null($fk)){
 			return $result = "<input type='hidden' name='category_id' id='category_id' value='$value' class='form-control' />";
@@ -127,7 +126,7 @@ public function getCategory_idFormField($value = ''){
 		if(is_array($fk)){
 			
 			$result ="<div class='form-group'>
-			<label for='category_id'>House Category</label>";
+			<label for='category_id'>Category</label>";
 			$option = $this->loadOption($fk,$value);
 			//load the value from the given table given the name of the table to load and the display field
 			$result.="<select name='category_id' id='category_id' class='form-control'>
@@ -156,9 +155,61 @@ public function getGenderFormField($value = ''){
 } 
 public function getAddressFormField($value = ''){
 	return "<div class='form-group'>
-				<label for='address'>Address</label>
+				<label for='address'>Enter your address</label>
 				<textarea name='address' id='address' class='form-control' required>$value</textarea>
 			</div>";
+} 
+public function getMarriageFormField($value = ''){
+	$arr =array('single'=>'Single','married'=>'Married','others'=>'Others');
+       $option = buildOptionUnassoc2($arr,$value);
+       return "<div class='form-group'>
+       		<label for='married'>Marital Status</label>
+              <select name='married' id='married' class='form-control' required>
+              $option
+              </select>
+</div>";
+} 
+public function getDepartments_idFormField($value = ''){
+	$fk = ['table'=>'departments','display'=>'name'];
+
+		if(is_null($fk)){
+			return $result = "<input type='hidden' name='department_id' id='department_id' value='$value' class='form-control' />";
+		}
+
+		if(is_array($fk)){
+			
+			$result ="<div class='form-group'>
+			<label for='departments_id'>Department</label>";
+			$option = $this->loadOption($fk,$value);
+			//load the value from the given table given the name of the table to load and the display field
+			$result.="<select name='departments_id' id='departments_id' class='form-control'>
+						$option
+					</select>";
+					$result.="</div>";
+		return $result;
+		}
+} 
+public function getPresent_accommodationFormField($value = ''){
+	$option = buildOptionFromQuery($this->db,"SELECT id,category_name as value from category order by value asc",null,$value,'chooose present accommodation');
+	$result ="<div class='form-group'>
+	<label for='present_accommodation_id'>Present Accommodation (If applicable)</label>";
+	//load the value from the given table given the name of the table to load and the display field
+	$result.="<select name='present_accommodation' id='present_accommodation' class='form-control'>
+				$option
+			</select>";
+			$result.="</div>";
+return $result;
+		
+}
+public function getHall_locationFormField($value = ''){
+	$arr =array('campus' => 'Campus','off_campus'=>'Off Campus');
+	$option = buildOptionUnassoc2($arr,$value);
+	return "<div class='form-group'>
+	<label for='hall_location'>Hall Location</label>
+		<select name='hall_location' id='hall_location' class='form-control'  >
+		$option
+		</select>
+</div> ";
 } 
 public function getApplicant_statusFormField($value = ''){
 	return "";
@@ -168,18 +219,7 @@ public function getDate_modifiedFormField($value = ''){
 } 
 public function getDate_createdFormField($value = ''){
 	return "";
-}
-
-private function generateApplicantCode(){
-	$orderStart = '100000011';
-	$query = "select applicant_code as code from applicant_allocation order by ID desc limit 1";
-	$result = $this->query($query);
-	if($result && $result[0]['code']){
-		[$label,$temp] = explode('UIH',$result[0]['code']);
-		$orderStart = ($temp) ? $temp+1 : $orderStart;
-	}
-	return 'UIH'.$orderStart;
-}
+} 
 
 protected function getStaff(){
 	$query = 'SELECT * FROM staff WHERE id=?';
@@ -211,6 +251,33 @@ protected function getCategory(){
 	}
 	$resultObject = new \App\Entities\Category($result[0]);
 	return $resultObject;
+}
+
+protected function getPresent_accommodation(){
+	$query = 'SELECT * FROM category WHERE id=?';
+	if (!isset($this->array['present_accommodation_id'])) {
+		return null;
+	}
+	$id = $this->array['present_accommodation_id'];
+	$db = $this->db;
+	$result = $db->query($query,[$id]);
+	$result = $result->getResultArray();
+	if (empty($result)) {
+		return false;
+	}
+	$resultObject = new \App\Entities\Category($result[0]);
+	return $resultObject;
+}
+
+private function generateApplicantCode(){
+	$orderStart = '100000011';
+	$query = "select applicant_code as code from applicant_allocation order by ID desc limit 1";
+	$result = $this->query($query);
+	if($result && $result[0]['code']){
+		[$label,$temp] = explode('UIH',$result[0]['code']);
+		$orderStart = ($temp) ? $temp+1 : $orderStart;
+	}
+	return 'UIH'.$orderStart;
 }
 
 public static function init()
