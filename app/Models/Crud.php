@@ -363,8 +363,8 @@ class Crud
 	}
 
 	
-	# added this for json request and response using framework like vue
-	# the where contains the list of fieldname and the value
+	// added this for json request and response using framework like vue
+	// the where contains the list of fieldname and the value
 	public function allListFiltered(array $parameter,int &$totalRow=-1,
 		int $start=0, int $length=NULL, bool $resolveForeign=true,
 		string $sort=' order by ID desc ', string $whereClause=null,

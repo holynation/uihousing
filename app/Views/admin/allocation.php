@@ -59,7 +59,7 @@
                         <?php
                             $badgeClass = 'warning';
                             if($data->status == 'approved'){
-                                $badgeClass = 'danger';
+                                $badgeClass = 'success';
                             }
                         ?>
                         <span class="badge bg-label-<?= $badgeClass; ?> me-1"><?= strtoupper($data->status); ?></span>
@@ -159,6 +159,9 @@
           location.reload();
         }
       });
+
+      // adding js pagination
+      jsDataTablePaginate();
     });
 
     function ajaxFormSuccess(target,data) {

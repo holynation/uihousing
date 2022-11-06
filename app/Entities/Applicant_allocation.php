@@ -163,8 +163,8 @@ public function getMarriageFormField($value = ''){
 	$arr =array('single'=>'Single','married'=>'Married','others'=>'Others');
        $option = buildOptionUnassoc2($arr,$value);
        return "<div class='form-group'>
-       		<label for='married'>Marital Status</label>
-              <select name='married' id='married' class='form-control' required>
+       		<label for='marriage'>Marriage Status</label>
+              <select name='marriage' id='marriage' class='form-control' required>
               $option
               </select>
 </div>";

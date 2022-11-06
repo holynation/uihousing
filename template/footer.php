@@ -17,6 +17,47 @@
             <!-- Content wrapper -->
         </div>
         <!-- / Layout page -->
+
+        <!-- this is for the change password -->
+        <div class="row">
+          <div id="myModalPassword" class="modal fade animated" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h4 class="modal-title">Change your password</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <!-- this is the notification section -->
+                            <div id="data_notify"></div> 
+                          <!-- end notification -->
+                          <form action="<?php echo base_url('vc/changePassword'); ?>" method="post" role="form" id="form_change_password" name="form_change_password">
+                            <div class="form-group mb-3">
+                                <label for="current_password">Current Password</label>
+                                <input class="form-control" type="password" required name="current_password" id="current_password" placeholder="Enter your current password">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="password">New Password</label>
+                                <input class="form-control" type="password" required name="password" id="password" placeholder="Enter your new password">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="confirm_password">Confirm Password</label>
+                                <input class="form-control" type="password" required name="confirm_password" id="confirm_password" placeholder="Enter your password again">
+                            </div>
+                            <div class="form-group">
+                              <button class="btn btn-primary">Update</button>
+                            </div>
+                            <input type="hidden" name="isajax">
+                          </form>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-dark" id="close" data-bs-dismiss="modal">Close
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
     </div>
     <!-- Overlay -->
     <div class="layout-overlay layout-menu-toggle"></div>
@@ -53,21 +94,26 @@
                 paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
             }
         });
-        var table = $('#datatable-buttons').DataTable({
-            dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
-            buttons: {   
-                dom: {
-                    button: {
-                        className: 'btn btn-primary'
-                    }
+
+        function jsDataTablePaginate(paging = true){
+            var table = $('#datatable-buttons').DataTable({
+                dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+                buttons: {   
+                    dom: {
+                        button: {
+                            className: 'btn btn-primary'
+                        }
+                    },
+                    buttons: [
+                        'csvHtml5',
+                        'excelHtml5',
+                        'print'
+                    ]
                 },
-                buttons: [
-                    'csvHtml5',
-                    'excelHtml5',
-                    'print'
-                ]
-            }
-        });
+                paging: paging
+            });
+        }
+        // jsDataTablePaginate();
 
         /* Code for changing active link on clicking */
         const menuItems = $(".bg-menu-theme .menu-inner > .menu-item");
@@ -90,7 +136,28 @@
     <!-- Main JS -->
     <script src="<?php echo base_url("assets/js/main.js"); ?> "></script>
     <script src="<?php echo base_url("assets/js/custom.js"); ?> "></script>
-    <!-- Page JS -->
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var data_notify = $('#data_notify');
+        $('#form_change_password').submit(function(e){
+          e.preventDefault();
+          var password = $('#password').val(),
+              confirm_password = $('#confirm_password').val(),
+              current_password = $('#current_password').val();
+
+              if(password == '' || confirm_password == '' || password == ''){
+                  data_notify.html('<p class="alert alert-danger" style="width:100%;margin:0 auto;">All Field is required...</p>');
+                  return false;
+              }
+              else if(password != confirm_password ){
+                data_notify.html('<p class="alert alert-danger" style="width:100%;margin:0 auto;">New password must match Confirm password...</p>');
+                return false;
+              }else{
+                submitAjaxForm($(this));
+              }
+        });
+      })
+    </script>
     <!-- Place this tag in your head or just before your close body tag. -->
   </body>
 </html>

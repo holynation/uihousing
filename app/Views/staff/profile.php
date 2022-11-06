@@ -5,6 +5,11 @@
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account</h4>
         <div class="row">
             <div class="col-md-12">
+              <?php if($webSessionManager->getFlashMessage('profile')): ?>
+              <div class="alert alert-info">
+                <span class="text-center">Please update your profile</span>
+              </div>
+            <?php endif; ?>
                 <div class="card mb-4">
                   <h5 class="card-header">Profile Details</h5>
                   <!-- Account -->
@@ -180,6 +185,14 @@
                               echo $option
                             ?>
                           </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                          <label for="date_first_app" class="form-label">Date of first appointment</label>
+                          <input type="date" class="form-control" id="date_first_app" name="date_first_app" placeholder="Date of first appointment" value="<?= $staff->date_first_app; ?>" />
+                        </div>
+                        <div class="mb-3 col-md-6">
+                          <label for="grade" class="form-label">Grade</label>
+                          <input type="text" class="form-control" id="grade" name="grade" placeholder="Staff Grade" value="<?= $staff->grade; ?>" />
                         </div>
                       </div>
                       <div class="mt-2">

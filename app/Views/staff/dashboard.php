@@ -2,6 +2,12 @@
 
 <!-- Content -->
 <div class="container-xxl flex-grow-1 container-p-y">
+  <?php if(!$staff->staff_path): ?>
+      <div class="alert alert-info w-50">
+        <span class="text-center">Please update your profile.</span>
+        <a href="<?= url_to('staff_profile'); ?>" class="text-danger">Click Here</a>
+      </div>
+    <?php endif; ?>
   <div class="row">
     <div class="col-lg-4 col-md-6 col-6 mb-0">
       <div class="card">

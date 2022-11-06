@@ -151,6 +151,8 @@
           location.reload();
         }
       });
+      // adding js pagination
+      // jsDataTablePaginate();
     });
 
     function ajaxFormSuccess(target,data) {

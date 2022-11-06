@@ -303,6 +303,9 @@ $formContent= $modelFormBuilder->start($model.'_table')
         var action = $(this).text();
         sendAjax(null,link,'','get',showUpdateForm);
       });
+
+      // adding js pagination
+      jsDataTablePaginate();
     });
 
     function showUpdateForm(target,data) {

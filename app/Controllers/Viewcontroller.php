@@ -209,11 +209,25 @@ private function adminView_more(&$data){
 
 private function adminApplicant_allocation(&$data){
   $allocation = loadClass('applicant_allocation');
-  $payload = $allocation->all($count,false,0,null,'order by date_created desc'," where applicant_status = 'pending'");
+  $pager = service('pager');
+  $page    = (int) ($this->request->getGet('page') ?? 1);
+  $perPage = 20;
+  $total   = $allocation::totalCount();
 
-  $data['modelStatus'] = $payload ? true : false;
+  $start =  ($page > 1) ? ($page * $perPage) : $page;
+  $where = "where applicant_status = 'pending'";
+  if($this->request->getGet('category')){
+    $where .= " and category_id = '{$this->request->getGet('category')}'";
+  }
+  $payload = $allocation->all($count,false,$start,$perPage,'order by date_created desc',$where);
+
+  // Call makeLinks() to make pagination links.
+  $pager_links = $pager->makeLinks($page, $perPage, $total, 'front_full');
+
+  $data['pager_links'] = $pager_links;
+  $data['modelStatus'] = ($payload) ? true : false;
   $data['modelPayload'] = $payload;
-  $data['webSessionManager'] = $this->webSessionManager;
+  $data['db'] = $this->db;
 }
 
 private function adminAllocation(&$data){
@@ -238,6 +252,9 @@ private function staff($page,&$data){
     $staff->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
     $staff->load();
     $this->staffData->setStaff($staff);
+    if($this->webSessionManager->getCurrentUserProp('has_change_password') == 0){
+      $data['hasChangePassword'] = $this->webSessionManager->getCurrentUserProp('has_change_password');
+    }
     $data['staff'] = $staff;
   }
   else{
@@ -441,7 +458,6 @@ public function changePassword()
     $id= $this->webSessionManager->getCurrentUserProp('ID');
     $user = loadClass('user');
     if($user->findUserProp($id)){
-      // $check = md5(trim($curr_password)) == $user->data()[0]['password'];
       $check = decode_password(trim($curr_password), $user->data()[0]['password']);
       if(!$check){
         echo createJsonMessage('status',false,'message','please type-in your password correctly...','flagAction',false);
@@ -449,29 +465,31 @@ public function changePassword()
       }
     }
 
-    if ($new !==$confirm) {
+    if ($new !== $confirm) {
       echo createJsonMessage('status',false,'message','new password does not match with the confirmation password','flagAction',false);exit;
     }
-    // $new = md5($new);
     $new = encode_password($new);
     $passDate = date('Y-m-d H:i:s');
-      $query = "update user set password = '$new',last_change_password = '$passDate' where ID=?";
+      $query = "update user set password = '$new',has_change_password = '1' where ID=?";
       if ($this->db->query($query,array($id))) {
-        $arr['status']=true;
-        $arr['message']= 'operation successfull';
+        $this->webSessionManager->setContent('has_change_password','1');
+        
+        $arr['status'] = true;
+        $arr['message'] = 'operation successfull';
         $arr['flagAction'] = true;
         echo json_encode($arr);
         return;
       }
       else{
-        $arr['status']=false;
-        $arr['message']= 'error occured during operation...';
+        $arr['status'] = false;
+        $arr['message'] = 'error occured during operation...';
         $arr['flagAction'] = false;
         echo json_encode($arr);
         return;
       }
   }
   return false;
+
 }
 
 }

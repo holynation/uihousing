@@ -317,7 +317,7 @@ function buildOption($array, $val='',$defaultValue='')
 		return '';
 	}
 	$optionValue = ($defaultValue != '') ? "$defaultValue" : "---choose option---";
-	$result = "<option>$optionValue</option>";
+	$result = "<option value=''>$optionValue</option>";
 	for ($i = 0; $i < count($array); $i++) {
 		$current = $array[$i];
 		$id = $current['id'];

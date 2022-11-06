@@ -1,3 +1,15 @@
+<?php
+  $userType = $webSessionManager->getCurrentUserProp('user_type');
+  // using this to check if superagent had changed their password upon first login
+  if($userType == 'staff' && isset($hasChangePassword) && $hasChangePassword == 0){
+      echo "<script>
+        $(document).ready(function(){
+          document.getElementById('btnPasswordChange').click();
+        });
+     </script>";
+  }
+  // http://localhost/gig/uihousing/public/uploads/staff/839_63492d25c4748_2022-10-14.png
+?>
 <!DOCTYPE html>
 <html
   lang="en"
@@ -124,6 +136,12 @@
                                     <small class="text-muted"><?= ucfirst($userType); ?></small>
                                   </div>
                                 </div>
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#myModalPassword" id="btnPasswordChange">
+                                <i class="bx bx-lock-open-alt me-2"></i>
+                                <span class="align-middle">Change Password</span>
                               </a>
                             </li>
                             <li>

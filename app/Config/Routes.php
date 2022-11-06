@@ -88,6 +88,7 @@ $routes->add('auth/forgetPassword', 'Auth::forgetPassword');
 
 $routes->add('admin/dashboard', 'Viewcontroller::view/admin/dashboard');
 $routes->add('staff/dashboard', 'Viewcontroller::view/staff/dashboard');
+$routes->add('staff/profile', 'Viewcontroller::view/staff/profile', ['as' => 'staff_profile']);
 $routes->add('uploaded/(:any)/(:any)', 'Api::accessFiles/$1/$2');
 
 

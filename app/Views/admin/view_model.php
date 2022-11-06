@@ -115,6 +115,8 @@
         var action = $(this).text();
         sendAjax(null,link,'','get',showUpdateForm);
       });
+      // adding js pagination
+      jsDataTablePaginate();
     });
 
     function showUpdateForm(target,data) {

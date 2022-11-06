@@ -31,6 +31,33 @@
             <?php else: ?>
             <div class="card">
               <h5 class="card-header">Applicant Application</h5>
+              <div class="mx-3">
+                <form action="" method="get">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-left">
+                                        <em class="icon ni ni-calendar"></em>
+                                    </div>
+                                    <select class="form-control" name="category" id="category">
+                                      <?php $option = buildOptionFromQuery($db,"SELECT id,category_name as value from category order by value asc",null,(isset($_GET['category']) ? $_GET['category'] : ''),'choose category');
+                                        echo $option;
+                                      ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <div class="form-control-wrap">
+                                    <button type='submit' class="btn btn-primary save">Filter</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+              </div>
               <div class="table-responsive text-nowrap">
                 <table class="table" id="datatable-buttons">
                   <thead class="table-light">
@@ -131,6 +158,9 @@
                     <?php endforeach; ?>
                   </tbody>
                 </table>
+                <div class="float-right">
+                  <?= $pager_links; ?>
+                </div>
               </div>
             </div>
             <?php endif; ?>
@@ -159,6 +189,8 @@
           location.reload();
         }
       });
+      // adding js pagination
+      jsDataTablePaginate(false);
     });
 
     function ajaxFormSuccess(target,data) {

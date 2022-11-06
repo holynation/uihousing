@@ -1089,8 +1089,11 @@ class Modelcontroller extends BaseController
 				$hall = 'campus';
 				$applicantData = ['applicant_code'=>$this->generateApplicantCode(),'staff_id'=>$id,'category_id'=>'1','marriage'=>'married','departments_id'=>$department,'hall_location'=>$hall,'date_created'=>$appDate,'applicant_status'=>'approved'];
 
-				if($applicant = $this->validateApplicant($id){
-					$data = ['applicant_allocation_id'=>$applicant['id'], 'status' => 'approved'];
+				if($applicant = $this->validateApplicant($id)){
+					$data = [
+						'applicant_allocation_id' => $applicant['id'],
+						'status' => 'approved'
+					];
 
 					// update the applicant_allocation table first and insert into allocation
 					$this->db->table('applicant_allocation')
@@ -1153,7 +1156,7 @@ class Modelcontroller extends BaseController
 					// creating applicant
 					$applicantData = ['applicant_code'=>$this->generateApplicantCode(),'staff_id'=>$lastInsertId,'category_id'=>'1','marriage'=>'married','departments_id'=>$department,'hall_location'=>$hall,'date_created'=>$appDate,'applicant_status'=>'approved'];
 
-					if($applicant = $this->validateApplicant($lastInsertId){
+					if($applicant = $this->validateApplicant($lastInsertId)){
 						$data = ['applicant_allocation_id'=>$applicant['id'], 'status' => 'approved'];
 
 						// update the applicant_allocation table first and insert into allocation
