@@ -13,10 +13,10 @@
      <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
      <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
      <!-- bootstrap -->
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
-     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+     <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css'); ?>">
+     <link href="<?= base_url('assets/css/aos.min.css'); ?>" rel="stylesheet">
      <!-- icons -->
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+     <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap-icon.css') ?>">
      <!-- variable css -->
      <link rel="stylesheet" href="<?= base_url('assets/css/variable.css'); ?>">
      <!--main css -->
@@ -449,8 +449,8 @@
     </footer>
     <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="<?= base_url('assets/js/aos.min.js'); ?>"></script>
     <script src="<?= base_url('assets/js/script.js'); ?>"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url('assets/js/bootstrap.min.js'); ?>"></script>
 </body>
 </html>

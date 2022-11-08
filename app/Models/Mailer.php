@@ -168,7 +168,7 @@ class Mailer extends Model
         }
     }
 
-    public function mailerTest($recipient = '', $type = '', $customer, $info)
+    public function mailerTest($recipient = '', $type = '', $customer = '', $info = '')
     {
         echo $this->formatMsg($recipient, $type, $customer, $info);
     }
@@ -205,7 +205,7 @@ class Mailer extends Model
         return $msg;
     }
 
-    private function mailBody($recipient = '', $type = '', $customer, $info)
+    private function mailBody($recipient = '', $type = '', $customer = '', $info = '')
     {
         $msg = '';
         $receiverName = $recipient;
