@@ -435,7 +435,7 @@
   
           <div class="d-flex flex-column align-items-center align-items-lg-start">
             <div class="copyright">
-              &copy; Copyright <strong><span>University of Ibadan</span></strong>. All Rights Reserved
+              &copy; Copyright <strong><span>Computer Science Students supervised by Drs. Ayinla and Onasanya</span></strong>
             </div>
           </div>
   
