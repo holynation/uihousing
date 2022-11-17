@@ -21,7 +21,6 @@ h5,
 h6 {
   font-family: var(--font-primary);
 }
-
 /* Scroll-top button */
 .scroll-top {
   position: fixed;
