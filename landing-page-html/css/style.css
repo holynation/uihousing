@@ -71,7 +71,7 @@ h6 {
 
 .section-header {
   text-align: center;
-  padding-bottom: 40px;
+  /* padding-bottom: 40px; */
 }
 
 .section-header h2 {
@@ -82,9 +82,16 @@ h6 {
 }
 
 .section-header p {
-  margin: 0 auto;
+  /* margin: 0 auto; */
+  font-size: 17px;
   color: var(--color-secondary-light);
 }
+@media (max-width: 1000px){
+  .section-header #header-text{
+    color:rgba(var(--color-white-rgb), 0.9);
+  }
+}
+
  @media (min-width: 1280px) {
     .section-header p {
       max-width: 80%;
