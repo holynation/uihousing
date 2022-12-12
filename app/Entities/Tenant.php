@@ -57,14 +57,14 @@ public static $uniqueArray = [];
 * of the field
 * @var array
 */
-public static $typeArray = ['staff_id' => 'int','occupant_fullname' => 'varchar','occupant_status' => 'enum','phone_number' => 'varchar','relationship_main' => 'varchar','date_occupied' => 'date','status' => 'tinyint','date_modified' => 'timestamp','date_created' => 'timestamp'];
+public static $typeArray = ['staff_id' => 'int','occupant_fullname' => 'varchar','occupant_status' => 'enum','phone_number' => 'varchar','relationship_main' => 'varchar','date_occupied' => 'date','tenant_path'=>'varchar','status' => 'tinyint','date_modified' => 'timestamp','date_created' => 'timestamp'];
 
 /** 
 * This is a dictionary that map a field name with the label name that
 * will be shown in a form
 * @var array
 */
-public static $labelArray = ['ID' => '','staff_id' => '','occupant_fullname' => '','occupant_status' => '','phone_number' => '','relationship_main' => '','date_occupied' => '','status' => '','date_modified' => '','date_created' => ''];
+public static $labelArray = ['ID' => '','staff_id' => '','occupant_fullname' => '','occupant_status' => '','phone_number' => '','relationship_main' => '','date_occupied' => '','tenant_path'=>'','status' => '','date_modified' => '','date_created' => ''];
 
 /** 
 * Associative array of fields in the table that have default value
@@ -82,7 +82,7 @@ public static $defaultArray = ['status' => '1','date_modified' => 'current_times
 * else the system will pick the current user id in the session as the name of the file 
 * @var array
 */
-public static $documentField = []; 
+public static $documentField = ['tenant_path'=>['type'=>['jpeg','jpg','png'],'size'=>'819200','directory'=>'tenant/','preserve'=>false]]; 
 
 /** 
 * This is an associative array of fields showing relationship between
@@ -146,6 +146,17 @@ public function getStatusFormField($value = ''){
 				<label for='status'>Status</label>
 				<input type='text' name='status' id='status' value='$value' class='form-control' required />
 			</div>";
+}
+public function getTenant_pathFormField($value = ''){
+	$path =  ($value != '') ? $value : "";
+       return "<div class='row'>
+                <div class='col-lg-8'>
+                    <div class='form-group'>
+                    <label for='tenant_path' class='form-label'>Tenant Image</label>
+                <input type='file' class='form-control' name='tenant_path' id='tenant_path' />
+                <span class='form-text text-muted'>Max File size is 800KB. Supported formats: <code> jpeg,jpg,png</code></span></div></div>
+                <div class='col-sm-4'><img src='$path' alt='tenant profile' class='img-responsive' width='30%'/></div>
+            </div><br>";
 } 
 public function getDate_modifiedFormField($value = ''){
 	return "";

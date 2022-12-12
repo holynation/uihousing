@@ -88,7 +88,7 @@
                             ></span>
                           </div>
                         </div>
-                        <!-- this is the modal form -->
+                        <!-- this is the Staff profile modal form -->
                         <div class="modal fade" tabindex="-1" id="myModal-<?= $data->ID; ?>" role="dialog" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-top" role="document">
                             <div class="modal-content">

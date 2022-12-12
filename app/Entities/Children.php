@@ -57,14 +57,14 @@ public static $uniqueArray = [];
 * of the field
 * @var array
 */
-public static $typeArray = ['staff_id' => 'int','fullname' => 'varchar','gender' => 'enum','birthdate' => 'date','status' => 'tinyint','date_modified' => 'timestamp','date_created' => 'timestamp'];
+public static $typeArray = ['staff_id' => 'int','fullname' => 'varchar','gender' => 'enum','birthdate' => 'date','children_path'=>'varchar','status' => 'tinyint','date_modified' => 'timestamp','date_created' => 'timestamp'];
 
 /** 
 * This is a dictionary that map a field name with the label name that
 * will be shown in a form
 * @var array
 */
-public static $labelArray = ['ID' => '','staff_id' => '','fullname' => '','gender' => '','birthdate' => '','status' => '','date_modified' => '','date_created' => ''];
+public static $labelArray = ['ID' => '','staff_id' => '','fullname' => '','gender' => '','birthdate' => '','children_path'=>'Picture','status' => '','date_modified' => '','date_created' => ''];
 
 /** 
 * Associative array of fields in the table that have default value
@@ -82,7 +82,7 @@ public static $defaultArray = ['gender' => 'male','status' => '1','date_modified
 * else the system will pick the current user id in the session as the name of the file 
 * @var array
 */
-public static $documentField = []; 
+public static $documentField = ['children_path'=>['type'=>['jpeg','jpg','png'],'size'=>'819200','directory'=>'children/','preserve'=>false]]; 
 
 /** 
 * This is an associative array of fields showing relationship between
@@ -129,6 +129,17 @@ public function getBirthdateFormField($value = ''){
 				<label for='birthdate'>Birth Date</label>
 				<input type='date' name='birthdate' id='birthdate' value='$value' class='form-control' required />
 			</div>";
+}
+public function getChildren_pathFormField($value = ''){
+	$path =  ($value != '') ? $value : "";
+       return "<div class='row'>
+                <div class='col-lg-8'>
+                    <div class='form-group'>
+                    <label for='children_path' class='form-label'>Children Image</label>
+                <input type='file' class='form-control' name='children_path' id='children_path' />
+                <span class='form-text text-muted'>Max File size is 800KB. Supported formats: <code> jpeg,jpg,png</code></span></div></div>
+                <div class='col-sm-4'><img src='$path' alt='children profile' class='img-responsive' width='30%'/></div>
+            </div><br>";
 } 
 public function getStatusFormField($value = ''){
 	return "";

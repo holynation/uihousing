@@ -1,14 +1,14 @@
 <?php
   $userType = $webSessionManager->getCurrentUserProp('user_type');
+  $jqueryUrl = base_url("assets/vendor/libs/jquery/jquery.js");
   // using this to check if superagent had changed their password upon first login
   if($userType == 'staff' && isset($hasChangePassword) && $hasChangePassword == 0){
-      echo "<script>
+      echo "<script src='{$jqueryUrl}'></script><script>
         $(document).ready(function(){
           document.getElementById('btnPasswordChange').click();
         });
      </script>";
   }
-  // http://localhost/gig/uihousing/public/uploads/staff/839_63492d25c4748_2022-10-14.png
 ?>
 <!DOCTYPE html>
 <html

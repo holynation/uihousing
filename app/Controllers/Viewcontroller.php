@@ -238,6 +238,10 @@ private function adminAllocation(&$data){
   $data['modelPayload'] = $payload;
 }
 
+private function adminApprove_allocation(&$data){
+
+}
+
 private function getTitlePage(string $modelName){
   $result = [
     'staff' => 'staff'

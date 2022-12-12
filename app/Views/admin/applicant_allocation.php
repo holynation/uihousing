@@ -3,13 +3,13 @@
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
           <div class="d-flex">
-            <h4><span>Admin Allocation Page</h4>
+            <h4><span>Admin Allocation List Page</h4>
           </div>
 
           <div class="d-flex">
             <div class="breadcrumb">
               <a href="<?php echo base_url("vc/$userType/dashboard"); ?>" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
-              <a href="#" class="breadcrumb-item">Allocation</a>
+              <a href="#" class="breadcrumb-item">Allocation List</a>
               <span class="breadcrumb-item active">Current</span>
             </div>
           </div>
@@ -96,7 +96,7 @@
                       <td><?= dateFormatter($data->date_created); ?></td>
                       <td>
                         <?php
-                          $statusLink = base_url("changestatus/applicant_allocation/approved/{$data->ID}");
+                          $statusLink = base_url("vc/admin/approve_allocation/{$data->ID}");
                         ?>
                         <div class="dropdown">
                           <button type="button" class="btn btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -106,7 +106,7 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle='modal' data-bs-target='#myModal-<?= $data->ID; ?>'
                                 ><i class="bx bx-user me-1"></i> View Profile</a
                             >
-                            <span data-item-id="<?php echo $data->ID; ?>" data-default='1' data-critical='1'>
+                            <span>
                             <a class="dropdown-item" href="<?= $statusLink; ?>"
                               ><i class="bx bx-list-check me-1"></i>Approve Application</a
                             ></span>
@@ -115,7 +115,8 @@
                             ></span>
                           </div>
                         </div>
-                        <!-- this is the modal form -->
+
+                        <!-- this is the staff profile modal form -->
                         <div class="modal fade" tabindex="-1" id="myModal-<?= $data->ID; ?>" role="dialog" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-top" role="document">
                             <div class="modal-content">

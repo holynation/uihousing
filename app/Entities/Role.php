@@ -206,7 +206,7 @@ class Role extends Crud
 		$db->transBegin();
 		$query="insert into role(ID,role_title) values(1,'superadmin') on duplicate key update role_title=values(role_title)";
 		if ($this->query($query)) {
-			$modules = $this->getModules();
+			$modules = array_merge($this->getModules(),$this->getExtraModules());
 			$q="insert into permission(role_id,path,permission) values(?,?,?) on duplicate key update permission=values(permission)";
 			$role_id=1;
 			foreach ($modules as $val) {
@@ -249,8 +249,8 @@ class Role extends Crud
 				'class'=>'bx-user-plus',
 				'children'=>array(
 					'Manage Staff'=>'vc/admin/view_model/staff',
-					'Manage Children'=>'vc/create/children',
-					'Manage Tenant'=>'vc/create/tenant',
+					// 'Manage Children'=>'vc/create/children',
+					// 'Manage Tenant'=>'vc/create/tenant',
 					'Staff Department' => 'vc/create/staff_department'
 				)
 			),
@@ -280,7 +280,8 @@ class Role extends Crud
 			'Extra Section' => array(
 				'class' => 'bx-layout',
 				'children' => array(
-					'Upload' => 'mc/upload_applicant'
+					'Upload' => 'mc/upload_applicant',
+					'Approve Allocation' => 'vc/admin/approve_allocation'
 				)
 			)
 		);

@@ -210,7 +210,7 @@ public function getNum_childrenFormField($value = ''){
 			</div>";
 } 
 public function getAcademic_statusFormField($value = ''){
-	$arr = array('student','academic','non_teaching','others');
+	$arr = array('academic','non_teaching');
 	$option = buildOptionUnassoc($arr,$value);
 	return "<div class='form-group'>
 	<label for='academic_status' >Academic Status</label>

@@ -545,13 +545,13 @@ function sendPageCookie($module, $page)
 function show_access_denied()
 {
 	$viewName = "App\\Views\\access_denied";
-	view($viewName);
+	return view($viewName);
 }
 
 function show_operation_denied()
 {
 	$viewName = "App\\Views\\operation_denied";
-	view($viewName);
+	return view($viewName);
 }
 //function to replace the first occurrence of a string
 function replaceFirst($toReplace, $replacement, $string)
