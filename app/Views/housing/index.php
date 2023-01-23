@@ -10,8 +10,6 @@
      <!-- fonts -->
      <link rel="preconnect" href="https://fonts.googleapis.com">
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
      <!-- bootstrap -->
      <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css'); ?>">
      <link href="<?= base_url('assets/css/aos.min.css'); ?>" rel="stylesheet">
@@ -56,16 +54,34 @@
             <div class="row align-items-center">
                 <div class="row align-items-center">
                     <div class="col-12 col-md-5 col-lg-6 text-center">
-                      <!-- Image -->
-                      <img src="<?= base_url('assets/img/site-images/house.jpg'); ?>" class="img-fluid rounded d-block w-100" alt="...">
-          
+                      <div id="headercarousel" class="carousel slide me-1" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                            <img src="<?= base_url('assets/img/carousel_img/Prof. Adebowale.jpeg') ?>" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                              <h5>Professor K.O. Adebowale, <small>FAS, mini</small></h5>
+                              <p class="text-white">Vice Chancellor, University of Ibadan</p>
+                            </div>
+                          </div>
+                          <div class="carousel-item">
+                            <img src="<?= base_url('assets/img/gallery/image8.jpg'); ?>" class="d-block w-100" alt="...">
+                          </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#headercarousel" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#headercarousel" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                      </div>
                     </div>
                     <div class="col-12 col-md-7 col-lg-6">
-          
                       <!-- Heading -->
-                      <h1 class="display-3 text-center text-md-start">
-                        Welcome to <span class="text-primary">UI Housing Management</span>.
-                      </h1>
+                      <h3 class="display-4 text-center text-md-start">
+                        Welcome to <span class="text-primary">UI Senior Staff Housing Management</span>.
+                      </h3>
           
                       <!-- Text -->
                       <p class="text-center text-md-start text-muted mb-6 mb-lg-8">
@@ -89,9 +105,12 @@
         <div class="container" data-aos="fade-up">
           <div class="section-header text-center pb-4">
             <h2 class="fs-1 fw-3 mb-3">About Us</h2>
-            <p class="mx-auto text-secondary">This is a housing platform where you can book a house and existing occupants can update their records.
-              We are here to make housing application easier and better. This platform will also
-              act as a housing records for every University of Ibadan occupant.</p>
+            <p class="mx-auto text-secondary">
+              This is a platform where you can apply for an 
+          accomodation and monitor the progress and update your record.
+          We are here to make housing application easier and better. This platform will also
+          act as a housing records for every University of Ibadan Senior Staff occupant.
+            </p>
           </div>
           <div class="row g-4 g-lg-5 mt-3" data-aos="fade-up" data-aos-delay="200">
             <div class="col-lg-5">
@@ -217,55 +236,55 @@
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="200" >
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery7.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image11.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="300">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery2.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image10.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div> 
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="400">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery4.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image3.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div> 
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="500">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery1.png'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image5.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="600">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery9.jpe'); ?>g" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image9.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div> 
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="600">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery3.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image6.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div> 
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="700">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery8.jpe'); ?>g" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image12.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div> 
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="700">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery1.png'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image7.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div> 
           </div>
 
           <div class="col-lg-4 col-md-6 gallery-item" data-aos="zoom-in" data-aos-delay="700">
             <div class="gallery-wrap">
-              <img src="<?= base_url('assets/img/gallery/gallery5.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
+              <img src="<?= base_url('assets/img/gallery/image8.jpg'); ?>" class="img-fluid" alt="image containing a school environment">
             </div>
           </div>
         </div>

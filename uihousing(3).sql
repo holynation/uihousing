@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 29, 2022 at 09:56 AM
--- Server version: 8.0.31-0ubuntu0.20.04.1
--- PHP Version: 7.4.30
+-- Generation Time: Jan 23, 2023 at 11:59 AM
+-- Server version: 8.0.31-0ubuntu0.20.04.2
+-- PHP Version: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -56,6 +56,7 @@ INSERT INTO `admin` (`ID`, `firstname`, `middlename`, `lastname`, `email`, `phon
 CREATE TABLE `allocation` (
   `ID` int NOT NULL,
   `applicant_allocation_id` int NOT NULL,
+  `room_lists_id` int NOT NULL,
   `status` enum('off','approved') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'off' COMMENT 'off means no longer on hall',
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -65,9 +66,9 @@ CREATE TABLE `allocation` (
 -- Dumping data for table `allocation`
 --
 
-INSERT INTO `allocation` (`ID`, `applicant_allocation_id`, `status`, `date_created`) VALUES
-(1, 51, 'approved', '2022-11-06 12:14:39'),
-(2, 59, 'approved', '2022-11-06 15:22:07');
+INSERT INTO `allocation` (`ID`, `applicant_allocation_id`, `room_lists_id`, `status`, `date_created`) VALUES
+(1, 51, 0, 'approved', '2022-11-06 12:14:39'),
+(2, 59, 0, 'approved', '2022-11-06 15:22:07');
 
 -- --------------------------------------------------------
 
@@ -77,17 +78,17 @@ INSERT INTO `allocation` (`ID`, `applicant_allocation_id`, `status`, `date_creat
 
 CREATE TABLE `applicant_allocation` (
   `ID` int NOT NULL,
-  `applicant_code` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `applicant_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `staff_id` int NOT NULL,
   `category_id` int NOT NULL,
   `dob` date DEFAULT NULL,
   `gender` enum('male','female') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `address` text COLLATE utf8mb4_general_ci,
-  `marriage` enum('single','married','others') COLLATE utf8mb4_general_ci NOT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `marriage` enum('single','married','others') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `departments_id` int NOT NULL,
   `present_accommodation` int DEFAULT NULL,
-  `hall_location` enum('campus','off_campus') COLLATE utf8mb4_general_ci NOT NULL,
-  `applicant_status` enum('pending','rejected','approved') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `hall_location` enum('campus','off_campus') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `applicant_status` enum('pending','rejected','approved') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'pending',
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -893,12 +894,27 @@ INSERT INTO `applicant_allocation` (`ID`, `applicant_code`, `staff_id`, `categor
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `boys_quarters`
+--
+
+CREATE TABLE `boys_quarters` (
+  `ID` int NOT NULL,
+  `room_lists_id` int NOT NULL,
+  `num_of_room` int NOT NULL,
+  `address` text COLLATE utf8mb4_general_ci,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `category`
 --
 
 CREATE TABLE `category` (
   `ID` int UNSIGNED NOT NULL,
-  `category_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `category_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -911,9 +927,7 @@ INSERT INTO `category` (`ID`, `category_name`, `status`) VALUES
 (2, '2 Bedroom', 1),
 (3, 'Bungalow', 1),
 (4, 'Duplex', 1),
-(5, 'Boy\'s Quarter', 1),
 (6, '1 Bedroom', 1),
-(7, 'ALL', 1),
 (8, 'Chalet', 1);
 
 -- --------------------------------------------------------
@@ -925,9 +939,10 @@ INSERT INTO `category` (`ID`, `category_name`, `status`) VALUES
 CREATE TABLE `children` (
   `ID` int NOT NULL,
   `staff_id` int NOT NULL,
-  `fullname` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
-  `gender` enum('male','female') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'male',
+  `fullname` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `gender` enum('male','female') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'male',
   `birthdate` date NOT NULL,
+  `children_path` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -937,8 +952,9 @@ CREATE TABLE `children` (
 -- Dumping data for table `children`
 --
 
-INSERT INTO `children` (`ID`, `staff_id`, `fullname`, `gender`, `birthdate`, `status`, `date_created`) VALUES
-(1, 839, 'John Doe', 'male', '2019-09-11', 1, '2022-10-14 10:01:44');
+INSERT INTO `children` (`ID`, `staff_id`, `fullname`, `gender`, `birthdate`, `children_path`, `status`, `date_created`) VALUES
+(1, 839, 'John Doe', 'male', '2019-09-11', NULL, 1, '2022-10-14 10:01:44'),
+(2, 839, 'test test', 'female', '2022-12-06', 'http://localhost/gig/uihousing/public/uploads/children/839_63968bf9640db_2022-12-12.jpeg', 1, '2022-12-12 02:03:37');
 
 -- --------------------------------------------------------
 
@@ -1474,7 +1490,9 @@ INSERT INTO `permission` (`ID`, `role_id`, `path`, `permission`) VALUES
 (3452, 1, 'vc/create/tenant', 'w'),
 (5752, 1, 'vc/admin/allocation', 'w'),
 (6087, 1, 'vc/admin/applicant_allocation', 'w'),
-(9161, 1, 'vc/admin/upload_applicant', 'w');
+(9161, 1, 'vc/admin/upload_applicant', 'w'),
+(14385, 1, 'mc/upload_applicant', 'w'),
+(14386, 1, 'vc/admin/approve_allocation', 'w');
 
 -- --------------------------------------------------------
 
@@ -1499,6 +1517,21 @@ INSERT INTO `role` (`ID`, `role_title`, `status`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `room_lists`
+--
+
+CREATE TABLE `room_lists` (
+  `ID` int NOT NULL,
+  `category_id` int NOT NULL,
+  `name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `address` text COLLATE utf8mb4_general_ci,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `staff`
 --
 
@@ -1506,14 +1539,14 @@ CREATE TABLE `staff` (
   `ID` int UNSIGNED NOT NULL COMMENT 'Primary Key',
   `title_id` int DEFAULT NULL,
   `occupant_num` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `surname` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `firstname` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `othername` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `surname` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `firstname` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `othername` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `gender` enum('male','female') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `marital_status` enum('married','single','others') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `lga_of_origin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `state_of_origin` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `state_of_origin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `num_children` int DEFAULT NULL,
   `academic_status` enum('student','academic','non_teaching','others') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'academic',
   `grade` int DEFAULT NULL,
@@ -1523,7 +1556,7 @@ CREATE TABLE `staff` (
   `office_address` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `phone_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `hall` enum('campus','off_campus') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `staff_path` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `staff_path` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -2346,10 +2379,10 @@ INSERT INTO `staff` (`ID`, `title_id`, `occupant_num`, `surname`, `firstname`, `
 (831, NULL, '4964', 'Akintola', 'Simisola', 'O.', NULL, '', 'married', NULL, NULL, 1, 'academic', 7, 140, NULL, '1991-10-01', '', '', 'off_campus', NULL, 1, '2022-09-20 03:56:30'),
 (832, NULL, '7044', 'Wahab', 'W.', 'B.', NULL, '', 'married', NULL, NULL, 3, 'academic', 7, 140, NULL, '2006-06-01', '', '', 'off_campus', NULL, 1, '2022-09-20 03:56:30'),
 (833, NULL, '5419', 'Oluwadare', 'A.', 'O.', NULL, '', 'married', NULL, NULL, 4, 'academic', 7, 140, NULL, '1998-04-02', '', '', 'off_campus', NULL, 1, '2022-09-20 03:56:30'),
-(835, NULL, '0025', 'Ayinla', 'Babatunde', 'Isaiah', NULL, 'male', 'married', NULL, NULL, 0, 'others', 0, 12, NULL, NULL, '', '', 'off_campus', NULL, 1, '2022-09-20 03:56:30'),
+(835, NULL, '0025', 'Ayinla', 'Babatunde', 'Isaiah', NULL, 'male', 'married', NULL, NULL, 0, 'non_teaching', 0, 12, NULL, NULL, '', '', 'off_campus', NULL, 1, '2022-09-20 03:56:30'),
 (837, 0, '0005', 'Akinlabi', 'Oluwatobi', 'Ogunwobi', '', 'male', 'married', '', '', 4, 'non_teaching', 13, 13, '2022-08-31', '2022-09-11', 'Faculty of Arts Lecture room', '07086689241', 'campus', NULL, 1, '2022-09-20 03:56:30'),
 (838, NULL, '0022', 'Bamidele', 'Bosede', 'Ipeola', NULL, 'female', 'married', NULL, NULL, 4, 'non_teaching', 0, 29, '2022-09-20', '2022-08-28', 'Computer Science, Koladaisi Building', '08035777159', 'campus', NULL, 1, '2022-09-20 03:56:30'),
-(839, 5, '54545', 'Alatise', 'Oluwaseun', 'Abrahams', 'holynationdevelopment@gmail.com', '', '', '', '', NULL, 'student', NULL, 87, NULL, NULL, 'This is  a test case', '', NULL, NULL, 1, '2022-09-22 02:01:11'),
+(839, 5, '54545', 'Alatise', 'Oluwaseun', 'Abrahams', 'holynationdevelopment@gmail.com', '', '', '', '', NULL, 'academic', NULL, 87, NULL, NULL, 'This is  a test case', '', NULL, 'http://localhost/gig/uihousing/public/uploads/staff/839_6396896b59c54_2022-12-12.jpeg', 1, '2022-09-22 02:01:11'),
 (840, NULL, '29020', 'Patrick', 'N.U.', '', NULL, NULL, 'married', NULL, NULL, NULL, 'academic', 6, 70, '0000-00-00', NULL, NULL, NULL, 'off_campus', NULL, 1, '2022-11-04 13:07:51'),
 (841, NULL, 'CM/ 2735', 'Obasogie', 'E.', 'E.', NULL, NULL, 'married', NULL, NULL, NULL, 'academic', 6, 40, '0000-00-00', NULL, NULL, NULL, 'off_campus', NULL, 1, '2022-11-04 13:20:10'),
 (842, NULL, '20200', 'Yusuff', 'A', 'A', NULL, NULL, 'married', NULL, NULL, NULL, 'academic', 6, 0, '0000-00-00', NULL, NULL, NULL, 'off_campus', NULL, 1, '2022-11-04 13:37:16'),
@@ -3212,26 +3245,26 @@ INSERT INTO `staff_department` (`ID`, `staff_id`, `departments_id`, `status`) VA
 
 CREATE TABLE `staff_old` (
   `ID` int UNSIGNED NOT NULL,
-  `occupant_num` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `surname` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `firstname` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `othername` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `gender` enum('male','female') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'male',
+  `occupant_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `surname` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `firstname` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `othername` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gender` enum('male','female') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'male',
   `dob` date NOT NULL,
-  `marital_status` enum('married','single','others') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'married',
+  `marital_status` enum('married','single','others') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'married',
   `num_children` int NOT NULL,
   `lga_of_state` int NOT NULL,
   `title_id` int NOT NULL,
-  `academic_status` enum('student','academic','non_Teaching','others') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'others',
+  `academic_status` enum('student','academic','non_Teaching','others') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'others',
   `staff_grade` int NOT NULL,
   `designation_id` int NOT NULL,
   `date_first_appointment` date NOT NULL DEFAULT '1111-01-01',
   `date_present_appointment` date NOT NULL,
   `date_of_confirm` date NOT NULL,
-  `office_address` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone_number` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `hall` enum('campus','off_campus') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'off_campus',
-  `staff_path` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `office_address` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `hall` enum('campus','off_campus') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'off_campus',
+  `staff_path` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -3246,11 +3279,12 @@ CREATE TABLE `staff_old` (
 CREATE TABLE `tenant` (
   `ID` int NOT NULL,
   `staff_id` int NOT NULL,
-  `occupant_fullname` varchar(250) COLLATE utf8mb4_general_ci NOT NULL,
-  `occupant_status` enum('student','academic','non_teaching','others') COLLATE utf8mb4_general_ci NOT NULL,
-  `phone_number` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `relationship_main` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `occupant_fullname` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `occupant_status` enum('student','academic','non_teaching','others') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `relationship_main` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `date_occupied` date NOT NULL,
+  `tenant_path` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -3260,8 +3294,9 @@ CREATE TABLE `tenant` (
 -- Dumping data for table `tenant`
 --
 
-INSERT INTO `tenant` (`ID`, `staff_id`, `occupant_fullname`, `occupant_status`, `phone_number`, `relationship_main`, `date_occupied`, `status`, `date_created`) VALUES
-(1, 839, 'John Doe', 'student', '08109994422', '', '2022-06-22', 1, '2022-10-13 15:14:16');
+INSERT INTO `tenant` (`ID`, `staff_id`, `occupant_fullname`, `occupant_status`, `phone_number`, `relationship_main`, `date_occupied`, `tenant_path`, `status`, `date_created`) VALUES
+(1, 839, 'John Doe', 'student', '08109994422', '', '2022-06-22', NULL, 1, '2022-10-13 15:14:16'),
+(2, 839, 'John Doe', 'student', '07064625478', 'Non', '2022-12-07', 'http://localhost/gig/uihousing/public/uploads/tenant/839_63968d1e1fa35_2022-12-12.jpeg', 1, '2022-12-12 02:08:30');
 
 -- --------------------------------------------------------
 
@@ -3271,7 +3306,7 @@ INSERT INTO `tenant` (`ID`, `staff_id`, `occupant_fullname`, `occupant_status`, 
 
 CREATE TABLE `title` (
   `ID` int NOT NULL,
-  `name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -3311,7 +3346,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`ID`, `username`, `password`, `user_type`, `user_table_id`, `has_change_password`, `last_logout`, `date_created`, `status`) VALUES
 (1, 'admin@gmail.com', '$2y$10$BiOH3q7o8tJ49iBEjVtt0uCMmzVkLurvmZO3q5tFiHCactWOYWlu6', 'admin', 1, 1, '2021-09-22 12:47:07', '2018-04-05 19:26:09', 1),
-(2, 'staff@gmail.com', '$2y$10$qezZxiLNx/zwHeu8Qp1HhuHAIMRw7P/uIkZAWlp.yDulFYNY8gYOe', 'staff', 839, 1, NULL, '2022-09-22 02:16:44', 1),
+(2, 'staff@gmail.com', '$2y$10$Lt8qwdGfHz7hr2Nd//i0iubIvGIueTww0FU4zkmklVuQqtn7VF94.', 'staff', 839, 1, NULL, '2022-09-22 02:16:44', 1),
 (5, '18116', '$2y$10$Q3dEaycNFk1RUJqTLCyG9ezNCFy59f5eTHSWi9ApzCnNt1vmVBrje', 'staff', 526, 0, NULL, '2022-11-04 06:31:13', 1),
 (6, 'C2110', '$2y$10$fDtjjKnJzW0UgTUTp2kvluFJXUlQWfJxuWGZky3vr6vAWiKfwT3WW', 'staff', 527, 0, NULL, '2022-11-04 06:31:13', 1),
 (8, '2253', '$2y$10$2W97HC6pnTHsv3eSTeyYSu4jEqlOB.SybMNGm61iwiQQEFvulHecK', 'staff', 528, 0, NULL, '2022-11-04 07:29:29', 1),
@@ -4130,6 +4165,12 @@ ALTER TABLE `applicant_allocation`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `boys_quarters`
+--
+ALTER TABLE `boys_quarters`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Indexes for table `category`
 --
 ALTER TABLE `category`
@@ -4169,6 +4210,12 @@ ALTER TABLE `permission`
 ALTER TABLE `role`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `role_title` (`role_title`);
+
+--
+-- Indexes for table `room_lists`
+--
+ALTER TABLE `room_lists`
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `staff`
@@ -4235,6 +4282,12 @@ ALTER TABLE `applicant_allocation`
   MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=801;
 
 --
+-- AUTO_INCREMENT for table `boys_quarters`
+--
+ALTER TABLE `boys_quarters`
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
@@ -4244,7 +4297,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `children`
 --
 ALTER TABLE `children`
-  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `departments`
@@ -4262,13 +4315,19 @@ ALTER TABLE `designation`
 -- AUTO_INCREMENT for table `permission`
 --
 ALTER TABLE `permission`
-  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14001;
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14471;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
   MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `room_lists`
+--
+ALTER TABLE `room_lists`
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -4292,7 +4351,7 @@ ALTER TABLE `staff_old`
 -- AUTO_INCREMENT for table `tenant`
 --
 ALTER TABLE `tenant`
-  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `title`
