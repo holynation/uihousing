@@ -38,10 +38,9 @@
                       <th>Application Code</th>
                       <th>Staff Name</th>
                       <th>Category</th>
-                      <th>Date of Birth</th>
-                      <th>Gender</th>
                       <th>Address</th>
                       <th>Application Status</th>
+                      <th>Available Status</th>
                       <th>Application Date</th>
                       <th>Action</th>
                     </tr>
@@ -52,22 +51,27 @@
                       <td><i class="fab fa-angular fa-lg text-info me-3"></i> <strong><?= $data->applicant_allocation->applicant_code; ?></strong></td>
                       <td><?= $data->applicant_allocation->staff->surname.' '.$data->applicant_allocation->staff->firstname.' '.$data->applicant_allocation->staff->othername; ?></td>
                       <td><?= $data->applicant_allocation->category->category_name; ?></td>
-                      <td><?= ucfirst($data->applicant_allocation->gender); ?></td>
-                      <td><?= $data->applicant_allocation->dob; ?></td>
                       <td><?= $data->applicant_allocation->address; ?></td>
                       <td>
                         <?php
                             $badgeClass = 'warning';
-                            if($data->status == 'approved'){
-                                $badgeClass = 'success';
+                            $badgeClass1 = 'danger';
+                            $availStatus = 'active';
+                            if($data->allocation_status == 'approved'){
+                              $badgeClass = 'success';
+                            }
+                            if($data->avail_status == 'active'){
+                              $badgeClass1 = 'success';
+                              $availStatus = 'inactive';
                             }
                         ?>
-                        <span class="badge bg-label-<?= $badgeClass; ?> me-1"><?= strtoupper($data->status); ?></span>
+                        <span class="badge bg-label-<?= $badgeClass; ?> me-1"><?= strtoupper($data->allocation_status); ?></span>
                       </td>
+                      <td><span class="badge bg-label-<?= $badgeClass1; ?> me-1"><?= ucfirst($data->avail_status); ?></span></td>
                       <td><?= dateFormatter($data->applicant_allocation->date_created); ?></td>
                       <td>
                         <?php
-                          $statusLink = base_url("changestatus/allocation/off/{$data->ID}");
+                          $statusLink = base_url("changestatus/allocation/{$availStatus}/{$data->ID}");
                         ?>
                         <div class="dropdown">
                           <button type="button" class="btn btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -77,13 +81,16 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle='modal' data-bs-target='#myModal-<?= $data->ID; ?>'
                                 ><i class="bx bx-user me-1"></i> View Profile</a
                             >
-                            <?php if($data->status == 'approved'): ?>
+
+                            <?php if($data->allocation_status == 'approved'): ?>
                             <span data-item-id="<?php echo $data->ID; ?>" data-default='1' data-critical='1'>
                             <a class="dropdown-item" href="<?= $statusLink; ?>"
-                              ><i class="bx bx-list-check me-1"></i>Allocation Off</a
+                              ><i class="bx bx-list-check me-1"></i>Allocation <?= $data->avail_status == 'active' ? 'Off' : 'On' ?></a
                             ></span>
                             <?php endif; ?>
-                            <span><a class="dropdown-item" href="<?= base_url("vc/staff/print_application/{$data->applicant_allocation_id}"); ?>"
+
+                            <span>
+                              <a class="dropdown-item" href="<?= base_url("vc/staff/print_application/{$data->applicant_allocation_id}"); ?>"
                               ><i class="bx bx-printer me-1"></i>Print Application</a
                             ></span>
                           </div>

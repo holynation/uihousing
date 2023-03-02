@@ -42,5 +42,21 @@
 			return true;
 		}
 
+		public function onAllocationInserted($data,$type,&$db,&$message)
+		{
+			//remember to remove the file if an error occured here
+			//the user type should be admin
+			if ($type == 'insert') {
+				$id = $data['applicant_allocation_id'];
+				$allocation = loadClass('applicant_allocation');
+				$allocation->applicant_status = $data['allocation_status'];
+				if(!$allocation->update($id)){
+					$message = "something went wrong";
+					return false;
+				}
+			}
+			return true;
+		}
+
 	}
  ?>

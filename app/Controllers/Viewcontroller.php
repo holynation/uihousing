@@ -239,6 +239,15 @@ private function adminAllocation(&$data){
 }
 
 private function adminApprove_allocation(&$data){
+  $data['modelFormBuilder'] = $this->modelFormBuilder;
+  $id = (is_numeric($data['id'])) ? $data['id'] : null;
+  if(!$id){
+    return redirect()->back()->with('error', "Applicant allocation is missing");
+  }
+  $applicantAllocation = loadClass('applicant_allocation');
+  $applicantAllocation->ID = $id;
+  $applicantAllocation->load();
+  $data['applicantAllocation'] = $applicantAllocation;
 
 }
 

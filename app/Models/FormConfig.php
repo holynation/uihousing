@@ -46,36 +46,12 @@ class FormConfig
 		if($this->apiEntity){
 			$this->insertConfig = array
 			(
-				'equipments' => array(
-					'search' => array('equip_name')
-				),
-				'activity_log' => array(
-					'search' => array('events')
-				),
-				'equip_request' => array(
-					'search' => array('request_status')
-				)
 				//add new entry to this array
 			);
 		}
 		else{
 			$this->insertConfig = array
 			(
-				'hirers'=>array
-				(
-					'show_add' => false,
-					'exclude'=>array(),
-					'table_exclude'=>array(),
-					'header_title'=>'Manage registered hirers(s)',
-					'table_title'=>'Manage registered hirers(s)',
-					'has_upload'=>false,
-					'hidden'=>array(),
-					'show_status'=>false,
-					'search'=>array('fullname'),
-					'search_placeholder'=>array('Search...'),
-					'order_by' => array('fullname'),
-					// 'query'=>"select hirers.ID,fullname,hirers.phone_number,email,hirers_path,status from hirers"
-				),
 				'admin'=>array
 				(
 					'table_title' => 'Admin Table',
@@ -88,17 +64,6 @@ class FormConfig
 				),
 				'role'=>array(
 					'query'=>'select * from role where ID<>1'
-				),
-				'extend_equip_request' => array(
-					'table_exclude' => ['prev_equip_order'],
-					'query' => "SELECT extend_equip_request.ID,fullname as hirers_name, ( select concat_ws(' ',equip.equip_name,'(#',eqo.order_number,')') from equip_order eqo join equip_request eqr on eqr.equip_order_id = eqo.id join equipments equip on equip.id = eqr.equipments_id where extend_equip_request.prev_equip_order = eqo.id ) as prev_order,concat('#',equip_order.order_number) as order_number ,extend_equip_request.rental_from,extend_equip_request.rental_to,extend_equip_request.request_status,extend_equip_request.date_modified,extend_equip_request.date_created from extend_equip_request join equip_order on equip_order.id = extend_equip_request.equip_order_id join hirers on extend_equip_request.hirers_id = hirers.id order by extend_equip_request.ID desc "
-				),
-				'equipments' => array(
-					'table_exclude' => array('owners_id'),
-					'query' => "SELECT equipments.ID,fullname as owners_name,equip_name,cost_of_hire,cost_of_hire_interval,avail_from,avail_to,quantity,description,equipments.latitude,equipments.longitude,equipments.address,equipments.status,equipments.date_modified,equipments.date_created from equipments join owners on owners.id=equipments.owners_id join hirers on hirers.id=owners.hirers_id order by equipments.ID desc "
-				),
-				'reviews' => array(
-					'table_exclude' => array('is_owners'),
 				),
 				'service_charge' => array(
 					'show_add' => true,
@@ -123,62 +88,12 @@ class FormConfig
 		$result = [];
 		if($this->apiEntity){
 			$result = array(
-				'equip_request'=>array(
-					array(
-						'filter_label'=>'request_status',
-						'filter_display'=>'active_status'
-					)
-				),
-				'equip_delivery_status'=>array(
-					array(
-						'filter_label'=>'equipments_id',
-						'filter_display'=>'equipments_id'
-					)
-				),
-				'reviews'=>array(
-					array(
-						'filter_label'=>'equipments_id',
-						'filter_display'=>'equipments_id'
-					),
-					array(
-						'filter_label'=>'hirers_id',
-						'filter_display'=>'hirers_id'
-					)
-				),
-				'equipments'=>array(
-					array(
-						'filter_label'=>'latitude',
-						'filter_display'=>'lat'
-					),
-					array(
-						'filter_label'=>'longitude',
-						'filter_display'=>'lng'
-					)
-				),
-				'equip_order'=>array(
-					array(
-						'filter_label'=>'equipments_id',
-						'filter_display'=>'equipments_id'
-					)
-				),
-				'kyc_document'=>array(
-					array(
-						'filter_label'=>'hirers_id',
-						'filter_display'=>'hirers_id'
-					)
-				),
+
 			);
 		}
 		else{
 			$result = array(
-				'equip_request'=>array(
-					array(
-						'filter_label'=>'request_status',
-						'filter_display'=>'request_status',
-						'preload_query'=>'',
-					)
-					
-				)
+
 			);
 		}
 
@@ -201,16 +116,7 @@ class FormConfig
 		}
 		$this->updateConfig = array
 		(
-			'equip_request' => array(
-				'exclude' => array('date_created','date_modified'),
-			),
-			'reviews' => array(
-				'exclude' => array('date_created'),
-			),
-			'kyc_document' => array(
-				'exclude' => array('kyc_document_path')
-			)
-		//add new entry to this array
+			//add new entry to this array
 		);
 	}
 

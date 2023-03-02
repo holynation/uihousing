@@ -267,6 +267,7 @@ class Role extends Crud
 					'Title' => 'vc/create/title',
 					'Department' => 'vc/create/departments',
 					'Category' => 'vc/create/category',
+					'Category Location' => 'vc/create/category_location',
 					'Designation' => 'vc/create/designation'
 				)
 			),

@@ -180,7 +180,7 @@ class Actioncontroller extends BaseController
 			}
 			else if($model == 'allocation'){
 				$model = loadClass($model);
-				$model->status = $value;
+				$model->avail_status = $value;
 				$this->db->transBegin();
 				if($model->update($id)){
 					$this->db->transCommit();

@@ -35,7 +35,7 @@ class TableActionModel extends Model
 		}
 
 		$status = is_array($object)?$object['status']:$object->status;
-		if (!$status) { # check if status is false
+		if (!$status) { // check if status is false
 			$link = base_url("ac/enable/$classname");
 			$label = "enable";
 			if (strtolower($classname) == ('staff')) {

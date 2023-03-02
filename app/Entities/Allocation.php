@@ -20,7 +20,7 @@ protected static $tablename = "Allocation";
 * This array contains the field that can be null
 * @var array
 */
-public static $nullArray = ['status','date_created','date_modified'];
+public static $nullArray = ['date_created','date_modified'];
 
 /** 
 * This are fields that must be unique across a row in a table.
@@ -57,20 +57,20 @@ public static $uniqueArray = ['applicant_allocation_id'];
 * of the field
 * @var array
 */
-public static $typeArray = ['applicant_allocation_id' => 'int','status' => 'enum','date_modified' => 'timestamp','date_created' => 'timestamp'];
+public static $typeArray = ['applicant_allocation_id' => 'int','category_location_id' => 'int','allocation_status' => 'enum','date_modified' => 'timestamp','date_created' => 'timestamp'];
 
 /** 
 * This is a dictionary that map a field name with the label name that
 * will be shown in a form
 * @var array
 */
-public static $labelArray = ['ID' => '','applicant_allocation_id' => '','status' => '','date_modified' => '','date_created' => ''];
+public static $labelArray = ['ID' => '','applicant_allocation_id' => '','category_location_id'=>'','allocation_status' => '','date_modified' => '','date_created' => ''];
 
 /** 
 * Associative array of fields in the table that have default value
 * @var array
 */
-public static $defaultArray = ['status' => 'pending','date_modified' => 'current_timestamp()','date_created' => 'current_timestamp()'];
+public static $defaultArray = ['allocation_status' => 'pending','date_modified' => 'current_timestamp()','date_created' => 'current_timestamp()'];
 
 /** 
 *  This is an array containing an associative array of field that should be regareded as document field.
@@ -107,7 +107,7 @@ public function __construct(array $array = [])
  
 public function getApplicant_allocation_idFormField($value = ''){
 	$fk = null; 
- 	//change the value of this variable to array('table'=>'staff','display'=>'staff_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.[i.e the display key is a column name in the table specify in that array it means select id,'staff_name' as value from 'staff' meaning the display name must be a column name in the table model].It is important to note that the table key can be in this format[array('table' => array('staff', 'another table name'))] provided that their is a relationship between these tables. The value param in the function is set to true if the form model is used for editing or updating so that the option value can be selected by default;
+ 	//change the value of this variable to array('table'=>'staff','display'=>'staff_name');
 
 		if(is_null($fk)){
 			return $result = "<input type='hidden' name='applicant_allocation_id' id='applicant_allocation_id' value='$value' class='form-control' />";
@@ -127,11 +127,28 @@ public function getApplicant_allocation_idFormField($value = ''){
 		}
 		
 }
-public function getStatusFormField($value = ''){
-	return "<div class='form-group'>
-				<label for='status'>Status</label>
-				<input type='text' name='status' id='status' value='$value' class='form-control' required />
-			</div>";
+public function getCategory_location_idFormField($value = ''){
+	$query = "SELECT id,concat(address,' (', zone_type ,')') as value from category_location where status = '1' order by value asc";
+	$option = buildOptionFromQuery($this->db,$query,null,$value,'chooose location');
+	$result ="<div class='form-group'>
+	<label for='category_location_id'>Address Location</label>";
+	//load the value from the given table given the name of the table to load and the display field
+	$result.="<select name='category_location_id' id='category_location_id' class='form-control'>
+				$option
+			</select>";
+			$result.="</div>";
+return $result;
+		
+}
+public function getAllocation_statusFormField($value = ''){
+	$arr =array('rejected' => 'Rejected','approved'=>'Approved');
+	$option = buildOptionUnassoc2($arr,$value);
+	return "<div class='form-group mt-4'>
+	<label for='allocation_status'>Allocation Status</label>
+		<select name='allocation_status' id='allocation_status' class='form-control'  >
+		$option
+		</select>
+	</div> ";
 } 
 public function getDate_modifiedFormField($value = ''){
 	return "";
@@ -153,6 +170,22 @@ protected function getApplicant_allocation(){
 		return false;
 	}
 	$resultObject = new \App\Entities\Applicant_allocation($result[0]);
+	return $resultObject;
+}
+
+protected function getCategory_location(){
+	$query = 'SELECT * FROM category_location WHERE id=?';
+	if (!isset($this->array['category_location_id'])) {
+		return null;
+	}
+	$id = $this->array['category_location_id'];
+	$db = $this->db;
+	$result = $db->query($query,[$id]);
+	$result = $result->getResultArray();
+	if (empty($result)) {
+		return false;
+	}
+	$resultObject = new \App\Entities\Category_location($result[0]);
 	return $resultObject;
 }
 

@@ -44,7 +44,7 @@ public static $uploadDependency = [];
 * table id alone, the display field name provided must be a column in the table to replace the table id shown to the user.
 * @var array|string
 */
-public static $displayField = 'dob';
+public static $displayField = 'applicant_code';
 
 /** 
 * This array contains the fields that are unique
@@ -266,6 +266,22 @@ protected function getPresent_accommodation(){
 		return false;
 	}
 	$resultObject = new \App\Entities\Category($result[0]);
+	return $resultObject;
+}
+
+protected function getAllocation(){
+	$query = 'SELECT * FROM allocation WHERE applicant_allocation_id=?';
+	if (!isset($this->array['ID'])) {
+		return null;
+	}
+	$id = $this->array['ID'];
+	$db = $this->db;
+	$result = $db->query($query,[$id]);
+	$result = $result->getResultArray();
+	if (empty($result)) {
+		return false;
+	}
+	$resultObject = new \App\Entities\Allocation($result[0]);
 	return $resultObject;
 }
 
